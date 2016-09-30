@@ -3,7 +3,7 @@ sudo: true
 
 android:
   components:
-    - build-tools-19.1.0
+    - build-tools-23.0.0
 
 env:
   -  TERM=dumb

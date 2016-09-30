@@ -3,8 +3,11 @@ sudo: true
 
 android:
   components:
-    - build-tools-23.0.0
+    - platform-tools
+    - tools
+    - build-tools-23.0.3
     - android-23
+    - extra
 
 env:
   -  TERM=dumb

@@ -1,18 +1,21 @@
 package com.example.loon.malhada;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -25,9 +28,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 
-import static com.example.loon.malhada.R.styleable.WatchViewStub;
-
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends WearableActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     private TextView mTextView;
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        IntentFilter messageFilter = new IntentFilter(Intent.ACTION_SEND);
+        MessageReceiver messageReceiver = new MessageReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
     }
 
     protected void onClick(View v){
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements
             String[] result = new String[mResult.size()];
             mResult.toArray(result);
             mSelectedString = mResult.get(0);
-            //new SendToDataLayerThread("/message_path", mSelectedString).start();
+            new SendToDataLayerThread("/message_path", mSelectedString).start();
         } else {
             String msg = null;
 
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
                 case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
                     msg = "ERROR_RECOGNIZER_BUSY.";
                     break;
-                case SpeechRecognizer.ERROR_SERVER:
+                 case SpeechRecognizer.ERROR_SERVER:
                     msg = "ERROR_SERVER.";
                     break;
                 case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
@@ -106,6 +110,11 @@ public class MainActivity extends AppCompatActivity implements
                     break;
             }
         }
+    }
+
+    protected void onStart() {
+        super.onStart();
+        googleClient.connect();
     }
 
     @Override
@@ -155,5 +164,4 @@ public class MainActivity extends AppCompatActivity implements
             // Display message in UI
         }
     }
-
 }

@@ -15,8 +15,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class MainService extends Service {
-    NotificationManager Notifi_M;
-    Notification Notifi ;
 
     public MainService() {
     }

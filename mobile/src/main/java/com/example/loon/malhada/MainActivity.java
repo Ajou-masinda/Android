@@ -10,7 +10,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,8 +27,9 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    TextView editText;
+    ViewFlipper page;
     GoogleApiClient googleClient;
+    float xAtDown=0, xAtUp=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,14 +42,49 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
         Intent intent = new Intent(MainActivity.this,MainService.class);
         startService(intent);
+        page = (ViewFlipper) findViewById(R.id.page);
+        page.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    xAtDown = event.getX();
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP){
+                    xAtUp = event.getX();
+                    if(xAtUp < xAtDown){
+                        page.showNext();
+                    }
+                    else if(xAtUp > xAtDown){
+                        page.showPrevious();
+                    }
+                }
+                return true;
+            }
+        });
+    }
 
-        editText = (TextView) findViewById(R.id.textView);
+    public boolean onTouch(View view, MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN){
+            xAtDown = event.getX();
+        }
+        else if(event.getAction() == MotionEvent.ACTION_UP){
+            xAtUp = event.getX();
+            if(xAtUp < xAtDown){
+                page.showNext();
+            }
+            else if(xAtUp > xAtDown){
+                page.showPrevious();
+            }
+        }
+        Log.v("myTag", "X = " + xAtDown +" Y = " + xAtUp);
+        return true;
     }
 
     protected void onStart() {
         super.onStart();
         googleClient.connect();
     }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -96,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements
             String message = intent.getStringExtra("message");
             Log.v("myTag", "Main activity received message: " + message);
             // Display message in UI
-            editText.setText(message);
         }
     }
 }

@@ -20,6 +20,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_NAME ="name";
     private static final String KEY_IR ="ir";
+    private static final String KEY_IP ="ip";
+    private static final String KEY_CONDITION ="condition";
     private static final String KEY_LOCATION ="location";
     public DatabaseHandler(Context context) {
         super(context, DATABAES_NAME, null, DATABASE_VERSION);
@@ -27,7 +29,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_HEALTH_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "(" + KEY_ID + "INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_LOCATION + " TEXT," + KEY_IR + " TEXT" + ")";
+        String CREATE_HEALTH_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "(" + KEY_ID + "INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_LOCATION + " TEXT," + KEY_IR + " TEXT" + KEY_IP + " TEXT" + KEY_CONDITION + " TEXT" + ")";
         db.execSQL(CREATE_HEALTH_TABLE);
     }
     @Override
@@ -41,6 +43,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_NAME, plug_info.getName());
         values.put(KEY_LOCATION,  plug_info.getLocation());
         values.put(KEY_IR,  Integer.toString(plug_info.getIR()));
+        values.put(KEY_IP,  plug_info.getIR());
+        values.put(KEY_CONDITION,  Integer.toString(plug_info.getIR()));
 
         db.insert(TABLE_CONTACTS,null,values);
         db.close();
@@ -56,6 +60,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 plug_info.setName(cursor.getString(1));
                 plug_info.setLocation(cursor.getString(2));
                 plug_info.setIR(Integer.parseInt(cursor.getString(3)));
+                plug_info.setIp(cursor.getString(4));
+                plug_info.setCondition(Integer.parseInt(cursor.getString(3)));
                 pulg_infoList.add(plug_info);
             }while (cursor.moveToNext());
         }

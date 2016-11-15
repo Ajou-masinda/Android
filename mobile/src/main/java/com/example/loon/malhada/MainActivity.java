@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteAbortException;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -14,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,16 +29,24 @@ import com.google.android.gms.wearable.Wearable;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-
+    DatabaseHandler DbHandler;
     ViewFlipper page;
     GoogleApiClient googleClient;
     Button AddBt;
     float xAtDown=0, xAtUp=0;
+    private SQLiteDatabase DB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Build a new GoogleApiClient
+        // Build a new DatabaseHandler
+        DbHandler = new DatabaseHandler(this);
+        try {
+            DB = DbHandler.getWritableDatabase();
+        } catch (SQLiteAbortException ex){
+            DB = DbHandler.getWritableDatabase();
+        }
         googleClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
@@ -74,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements
     {
         if(v==AddBt){
             Intent intenthealthActivity =  new Intent(MainActivity.this, AddActivity.class);
-            startActivity(intenthealthActivity);
+            startActivityForResult(intenthealthActivity, 1);
         }
     }
 
@@ -96,6 +107,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        // 넘어갔던 화면에서 되돌아 왔을 때
+        if (resultCode==RESULT_OK) { // 정상 반환일 경우에만 동작하겠다
+            Toast.makeText(MainActivity.this, data.getStringExtra("name") + data.getStringExtra("location") + data.getIntExtra("ir",0) , Toast.LENGTH_LONG).show();
+        }
     }
 
     class SendToDataLayerThread extends Thread {

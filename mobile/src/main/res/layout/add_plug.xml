@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/button8" />
+        android:id="@+id/ComBt"
+        android:onClick="OnClickAdd"/>
 
     <TextView
         android:text="name : "
@@ -35,28 +36,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Name"
         android:ems="10"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/textView8"
-        android:id="@+id/editText4" />
+        android:id="@+id/nameEt" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Name"
         android:ems="10"
-        android:layout_below="@+id/editText4"
+        android:layout_below="@+id/nameEt"
         android:layout_toEndOf="@+id/textView8"
-        android:id="@+id/editText5" />
+        android:id="@+id/locationEt" />
 
     <CheckBox
         android:text="IR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/IRcheck"
-        android:layout_below="@+id/editText5"
+        android:layout_below="@+id/locationEt"
         android:layout_centerHorizontal="true" />
 
     <RadioGroup
@@ -70,14 +69,14 @@
             android:text="Tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/radioButton3"
+            android:id="@+id/TvRb"
             android:layout_weight="1" />
 
         <RadioButton
             android:text="Air"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/radioButton2"
+            android:id="@+id/AirRb"
             android:layout_weight="1" />
     </RadioGroup>
 

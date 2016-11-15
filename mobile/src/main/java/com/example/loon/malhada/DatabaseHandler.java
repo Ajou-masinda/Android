@@ -61,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 plug_info.setLocation(cursor.getString(2));
                 plug_info.setIR(Integer.parseInt(cursor.getString(3)));
                 plug_info.setIp(cursor.getString(4));
-                plug_info.setCondition(Integer.parseInt(cursor.getString(3)));
+                plug_info.setCondition(Integer.parseInt(cursor.getString(5)));
                 pulg_infoList.add(plug_info);
             }while (cursor.moveToNext());
         }

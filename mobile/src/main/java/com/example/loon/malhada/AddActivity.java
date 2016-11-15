@@ -32,8 +32,6 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.add_plug);
-        //AddMain = findViewById(R.id.addLayout);
-        //AddMain.setOnTouchListener(touchListener);
         Gradio = (RadioGroup) findViewById(R.id.Gradio);
         Gradio.setVisibility(View.INVISIBLE);
         IRcheck = (CheckBox) findViewById(R.id.IRcheck);
@@ -48,7 +46,6 @@ public class AddActivity extends AppCompatActivity {
 
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            Log.v("myTag", "What!!");
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 if (Gradio.getVisibility() == View.INVISIBLE && !IRcheck.isChecked()) {
                     Gradio.setVisibility(View.VISIBLE);

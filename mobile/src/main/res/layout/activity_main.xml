@@ -68,7 +68,8 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/button6"
                 android:layout_alignStart="@+id/button6"
-                android:id="@+id/button2" />
+                android:id="@+id/AddBt"
+                android:onClick="OnClick"/>
 
             <ListView
                 android:layout_width="match_parent"

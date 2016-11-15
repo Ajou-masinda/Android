@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements
 
     ViewFlipper page;
     GoogleApiClient googleClient;
+    Button AddBt;
     float xAtDown=0, xAtUp=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,30 +62,21 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             }
         });
+        AddBt = (Button) findViewById(R.id.AddBt);
     }
 
-    public boolean onTouch(View view, MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN){
-            xAtDown = event.getX();
-        }
-        else if(event.getAction() == MotionEvent.ACTION_UP){
-            xAtUp = event.getX();
-            if(xAtUp < xAtDown){
-                page.showNext();
-            }
-            else if(xAtUp > xAtDown){
-                page.showPrevious();
-            }
-        }
-        Log.v("myTag", "X = " + xAtDown +" Y = " + xAtUp);
-        return true;
-    }
 
     protected void onStart() {
         super.onStart();
         googleClient.connect();
     }
-
+    public void OnClick(View v)
+    {
+        if(v==AddBt){
+            Intent intenthealthActivity =  new Intent(MainActivity.this, AddActivity.class);
+            startActivity(intenthealthActivity);
+        }
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

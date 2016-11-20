@@ -16,10 +16,12 @@ import android.widget.Toast;
 
 public class MainService extends Service {
 
+    ConnectServer connectServer;
     public MainService() {
     }
 
     public void onCreate(){
+        connectServer = new ConnectServer("192.168.0.197", 3030);
     }
     @Override
     public IBinder onBind(Intent intent) {
@@ -38,7 +40,17 @@ public class MainService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("message");
+            message = message.replace(" ", "");
             Log.v("myTag", "Main activity received message: " + message);
+            message = "{\"message\":\""+ message + "\"}";
+            final String finalMessage = message;
+            Log.v("myTag", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectServer.sendJSON(finalMessage);
+                }
+            }).start();
             // Display message in UI
             Toast.makeText(MainService.this, message , Toast.LENGTH_LONG).show();
             //editText.setText(message);

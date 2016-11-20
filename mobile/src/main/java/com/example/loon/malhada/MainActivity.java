@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
-
     public class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

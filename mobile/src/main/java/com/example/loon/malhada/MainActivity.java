@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements
     ViewFlipper page;
     GoogleApiClient googleClient;
     Button AddBt;
+    ListView Plist;
+    PlugAdapter adapter = new PlugAdapter();
     float xAtDown=0, xAtUp=0;
     private SQLiteDatabase DB;
 
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         // Build a new DatabaseHandler
         DbHandler = new DatabaseHandler(this);
+        Plist = (ListView) findViewById(R.id.PList);
         try {
             DB = DbHandler.getWritableDatabase();
         } catch (SQLiteAbortException ex){
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         AddBt = (Button) findViewById(R.id.AddBt);
+        Plist.setAdapter(adapter);
+        adapter.addItem("이름",1);
     }
 
 
@@ -114,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements
                                     Intent data) {
         // 넘어갔던 화면에서 되돌아 왔을 때
         if (resultCode==RESULT_OK) { // 정상 반환일 경우에만 동작하겠다
+            Plug_Info plug_info = new Plug_Info( data.getStringExtra("name"),data.getStringExtra("location"),data.getIntExtra("ir",0),"192.168.43.55",0);
             Toast.makeText(MainActivity.this, data.getStringExtra("name") + data.getStringExtra("location") + data.getIntExtra("ir",0) , Toast.LENGTH_LONG).show();
         }
     }
@@ -139,14 +146,6 @@ public class MainActivity extends AppCompatActivity implements
                     Log.v("myTag", "ERROR: failed to send Message");
                 }
             }
-        }
-    }
-    public class MessageReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("message");
-            Log.v("myTag", "Main activity received message: " + message);
-            // Display message in UI
         }
     }
 }

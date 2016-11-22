@@ -21,7 +21,7 @@ public class MainService extends Service {
     }
 
     public void onCreate(){
-        connectServer = new ConnectServer("192.168.0.197", 3030);
+        connectServer = new ConnectServer("192.168.43.55", 3030);
     }
     @Override
     public IBinder onBind(Intent intent) {
@@ -44,7 +44,6 @@ public class MainService extends Service {
             Log.v("myTag", "Main activity received message: " + message);
             message = "{\"message\":\""+ message + "\"}";
             final String finalMessage = message;
-            Log.v("myTag", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             new Thread(new Runnable() {
                 @Override
                 public void run() {

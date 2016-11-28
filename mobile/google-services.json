@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1005763093691",
+    "firebase_url": "https://mashinda-f514e.firebaseio.com",
+    "project_id": "mashinda-f514e",
+    "storage_bucket": "mashinda-f514e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005763093691:android:992e77bb898ddeac",
+        "android_client_info": {
+          "package_name": "com.example.loon.malhada"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1005763093691-sgedueoolbel9uj4sedskuc2fgs1l4d8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5Pwt986h-gNHx1fBFg_eogBzbQECPz8s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

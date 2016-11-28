@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.sqlite.SQLiteAbortException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -14,7 +17,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,19 +31,25 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     DatabaseHandler DbHandler;
     ViewFlipper page;
     GoogleApiClient googleClient;
+    List<Plug_Info> PlugList = new ArrayList<Plug_Info>();
     Button AddBt;
     ListView Plist;
     PlugAdapter adapter = new PlugAdapter();
     float xAtDown=0, xAtUp=0;
     private SQLiteDatabase DB;
-
+    Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +60,14 @@ public class MainActivity extends AppCompatActivity implements
         try {
             DB = DbHandler.getWritableDatabase();
         } catch (SQLiteAbortException ex){
-            DB = DbHandler.getWritableDatabase();
+            DB = DbHandler.getReadableDatabase();
         }
         googleClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        FirebaseMessaging.getInstance().subscribeToTopic("notice");
         Intent intent = new Intent(MainActivity.this,MainService.class);
         startService(intent);
         page = (ViewFlipper) findViewById(R.id.page);
@@ -77,10 +89,51 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             }
         });
+        Thread t = new Thread(new Runnable() {
+             @Override
+             public void run() { // 오래 거릴 작업을 구현한다
+                 // TODO Auto-generated method stub
+                 try{
+                     // 걍 외우는게 좋다 -_-;
+                     final ImageView iv = (ImageView)findViewById(R.id.imageV);
+                    URL url = new URL("http://image.hankookilbo.com/images201506/hankookilbo_bi.jpg");
+                    InputStream is = url.openStream();
+                    final Bitmap bm = BitmapFactory.decodeStream(is);
+                    handler.post(new Runnable() {
+                         @Override
+                         public void run() { // 화면에 그려줄 작업
+                             iv.setImageBitmap(bm);
+                             }
+                        });
+                     iv.setImageBitmap(bm); //비트맵 객체로 보여주기
+                    } catch(Exception e){
+                    }
+                }
+            });
+        t.start();
         AddBt = (Button) findViewById(R.id.AddBt);
         Plist.setAdapter(adapter);
+        Plist.setOnItemLongClickListener(longClickListener);
         adapter.addItem("이름",1);
+        PlugList = DbHandler.getAllCustomer_Info();
+        for(int i=0; i< PlugList.size(); i++)
+        {
+            adapter.addItem(PlugList.get(i).getName(),PlugList.get(i).getIR());
+        }
     }
+    private AdapterView.OnItemLongClickListener longClickListener = new AdapterView.OnItemLongClickListener() {
+
+        @Override
+        public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int position, long arg3){
+            if(position>0) {
+                DbHandler.deleteContacnt(PlugList.get((position-1)));
+                PlugList.remove(position-1);
+                adapter.deleteItem(position);
+                adapter.notifyDataSetChanged();
+            }
+            return false;
+        }
+    };
 
 
     protected void onStart() {
@@ -92,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements
         if(v==AddBt){
             Intent intenthealthActivity =  new Intent(MainActivity.this, AddActivity.class);
             startActivityForResult(intenthealthActivity, 1);
+        }
+        else{
+
         }
     }
 
@@ -121,7 +177,10 @@ public class MainActivity extends AppCompatActivity implements
         // 넘어갔던 화면에서 되돌아 왔을 때
         if (resultCode==RESULT_OK) { // 정상 반환일 경우에만 동작하겠다
             Plug_Info plug_info = new Plug_Info( data.getStringExtra("name"),data.getStringExtra("location"),data.getIntExtra("ir",0),"192.168.43.55",0);
-            Toast.makeText(MainActivity.this, data.getStringExtra("name") + data.getStringExtra("location") + data.getIntExtra("ir",0) , Toast.LENGTH_LONG).show();
+            PlugList.add(plug_info);
+            adapter.addItem(plug_info.getName(),0);
+            adapter.notifyDataSetChanged();
+            DbHandler.addContact(plug_info);
         }
     }
 

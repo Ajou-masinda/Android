@@ -51,6 +51,11 @@ public class PlugAdapter extends BaseAdapter {
         item.setName(name);
         item.setCondition(con);
         listViewItemList.add(item);
+        return;
+    }
+    public  void deleteItem(int position){
+        listViewItemList.remove(position);
+        return;
     }
 }
 

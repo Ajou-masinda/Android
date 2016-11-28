@@ -15,13 +15,13 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private  static final int DATABASE_VERSION = 1;
-    private static final String DATABAES_NAME = "PlugManager";
-    private static final String TABLE_CONTACTS = "Plug";
+    private static final String DATABAES_NAME = "plug_manager";
+    private static final String TABLE_CONTACTS = "plug";
     private static final String KEY_ID = "id";
     private static final String KEY_NAME ="name";
     private static final String KEY_IR ="ir";
     private static final String KEY_IP ="ip";
-    private static final String KEY_CONDITION ="condition";
+    private static final String KEY_STATUS ="status";
     private static final String KEY_LOCATION ="location";
     public DatabaseHandler(Context context) {
         super(context, DATABAES_NAME, null, DATABASE_VERSION);
@@ -29,7 +29,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_HEALTH_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "(" + KEY_ID + "INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_LOCATION + " TEXT," + KEY_IR + " TEXT" + KEY_IP + " TEXT" + KEY_CONDITION + " TEXT" + ")";
+        String CREATE_HEALTH_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "(" + KEY_ID + "INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_LOCATION + " TEXT," + KEY_IR + " TEXT," + KEY_IP + " TEXT," + KEY_STATUS + " TEXT" + ")";
         db.execSQL(CREATE_HEALTH_TABLE);
     }
     @Override
@@ -43,15 +43,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_NAME, plug_info.getName());
         values.put(KEY_LOCATION,  plug_info.getLocation());
         values.put(KEY_IR,  Integer.toString(plug_info.getIR()));
-        values.put(KEY_IP,  plug_info.getIR());
-        values.put(KEY_CONDITION,  Integer.toString(plug_info.getIR()));
-
+        values.put(KEY_IP,  plug_info.getIp());
+        values.put(KEY_STATUS,  Integer.toString(plug_info.getIR()));
         db.insert(TABLE_CONTACTS,null,values);
         db.close();
     }
-    private List<Plug_Info> getAllCustomer_Info()    {
+    public List<Plug_Info> getAllCustomer_Info()    {
         List<Plug_Info> pulg_infoList = new ArrayList<Plug_Info>();
-        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
+        String selectQuery = "SELECT * FROM " + TABLE_CONTACTS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery,null);
         if(cursor.moveToFirst()){
@@ -65,6 +64,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 pulg_infoList.add(plug_info);
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return pulg_infoList;
     }
     public int getCount(){
@@ -74,5 +74,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // cursor.close();
         return cursor.getCount();
     }
-
+    public void deleteContacnt(Plug_Info plug_info){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CONTACTS,KEY_NAME + "=?", new String[] {plug_info.getName()});
+        db.close();
+    }
 }

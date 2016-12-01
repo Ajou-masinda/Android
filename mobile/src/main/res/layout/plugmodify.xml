@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:text="Name : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/name_mT" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/name_mEt"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/location_mEt"
+        android:layout_below="@+id/name_mEt"
+        android:layout_alignStart="@+id/name_mEt" />
+
+    <Button
+        android:text="modify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="38dp"
+        android:id="@+id/modify_mB"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/location_mT" />
+
+    <Button
+        android:text="delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="69dp"
+        android:id="@+id/Delete_mB"
+        android:layout_alignBaseline="@+id/modify_mB"
+        android:layout_alignBottom="@+id/modify_mB"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="Location : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/location_mT"
+        android:layout_alignBaseline="@+id/location_mEt"
+        android:layout_alignBottom="@+id/location_mEt"
+        android:layout_alignStart="@+id/textView" />
+</RelativeLayout>

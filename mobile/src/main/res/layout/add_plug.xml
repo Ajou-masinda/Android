@@ -61,9 +61,16 @@
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/Gradio"
         android:layout_below="@+id/IRcheck"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/Gradio">
+        android:layout_toStartOf="@+id/IRcheck">
+
+        <RadioButton
+            android:text="Air"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/AirRb"
+            android:layout_weight="1" />
 
         <RadioButton
             android:text="Tv"
@@ -72,11 +79,28 @@
             android:id="@+id/TvRb"
             android:layout_weight="1" />
 
+    </RadioGroup>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/Gaddradio"
+        android:layout_below="@+id/IRcheck"
+        android:layout_toEndOf="@+id/IRcheck">>
+
         <RadioButton
-            android:text="Air"
+            android:text="LG"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/AirRb"
+            android:id="@+id/LgRb"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="SAMSUNG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/SamsungRb"
             android:layout_weight="1" />
     </RadioGroup>
 

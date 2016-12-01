@@ -1,6 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <TextView
+        android:text="Name : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/nameT" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/nameT"
+        android:id="@+id/nameSetT" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameT"
+        android:layout_alignEnd="@+id/nameSetT"
+        android:id="@+id/locationSetT" />
+
+    <TextView
+        android:text="Location : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/locationT"
+        android:layout_alignBaseline="@+id/locationSetT"
+        android:layout_alignBottom="@+id/locationSetT"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="ON/OFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130dp"
+        android:id="@+id/OnOffB"
+        android:layout_below="@+id/locationT"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="volume DOWN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/volume_upB"
+        android:layout_alignEnd="@+id/volume_upB"
+        android:layout_marginTop="29dp"
+        android:id="@+id/volume_downB" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/volume_downB"
+        android:layout_toStartOf="@+id/channel_upB"
+        android:id="@+id/Tmp_upB"
+        android:text="tmp up" />
+
+    <Button
+        android:text="TMP DOWN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/channel_dwonB"
+        android:layout_toStartOf="@+id/channel_upB"
+        android:id="@+id/tmp_downB" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="19dp"
+        android:id="@+id/modifyB"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/tmp_downB"
+        android:text="modify" />
+
+    <Button
+        android:text="volume UP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="61dp"
+        android:id="@+id/volume_upB"
+        android:layout_marginStart="14dp"
+        android:layout_below="@+id/OnOffB"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="channel  Down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/channel_dwonB"
+        android:layout_alignBottom="@+id/volume_downB"
+        android:layout_toEndOf="@+id/tmp_downB" />
+
+    <Button
+        android:text="channel up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:id="@+id/channel_upB"
+        android:layout_alignBaseline="@+id/Tmp_upB"
+        android:layout_alignBottom="@+id/Tmp_upB"
+        android:layout_toEndOf="@+id/OnOffB" />
+</RelativeLayout>

@@ -31,6 +31,7 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.InputStream;
@@ -67,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-        FirebaseMessaging.getInstance().subscribeToTopic("notice");
         Intent intent = new Intent(MainActivity.this,MainService.class);
         startService(intent);
         page = (ViewFlipper) findViewById(R.id.page);
@@ -126,10 +126,16 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int position, long arg3){
             if(position>0) {
+                Intent intentModifyActivity =  new Intent(MainActivity.this, ConditionActivity.class);
+                intentModifyActivity.putExtra("name",PlugList.get(position-1).getName());
+                intentModifyActivity.putExtra("location",PlugList.get(position-1).getLocation());
+                intentModifyActivity.putExtra("ir",PlugList.get(position-1).getIR());
+                startActivityForResult(intentModifyActivity, 1);
+                /*
                 DbHandler.deleteContacnt(PlugList.get((position-1)));
-                PlugList.remove(position-1);
                 adapter.deleteItem(position);
                 adapter.notifyDataSetChanged();
+                */
             }
             return false;
         }
@@ -143,8 +149,8 @@ public class MainActivity extends AppCompatActivity implements
     public void OnClick(View v)
     {
         if(v==AddBt){
-            Intent intenthealthActivity =  new Intent(MainActivity.this, AddActivity.class);
-            startActivityForResult(intenthealthActivity, 1);
+            Intent intentAddActivity =  new Intent(MainActivity.this, AddActivity.class);
+            startActivityForResult(intentAddActivity, 1);
         }
         else{
 

@@ -75,6 +75,7 @@
         android:id="@+id/modifyB"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/tmp_downB"
+        android:onClick="OnClickCondition"
         android:text="modify" />
 
     <Button

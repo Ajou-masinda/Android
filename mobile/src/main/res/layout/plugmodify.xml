@@ -37,7 +37,8 @@
         android:layout_marginBottom="38dp"
         android:id="@+id/modify_mB"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/location_mT" />
+        android:layout_toEndOf="@+id/location_mT"
+        android:onClick="OnClickModity"/>
 
     <Button
         android:text="delete"
@@ -47,7 +48,8 @@
         android:id="@+id/Delete_mB"
         android:layout_alignBaseline="@+id/modify_mB"
         android:layout_alignBottom="@+id/modify_mB"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:onClick="OnClickModity"/>
 
     <TextView
         android:text="Location : "
@@ -55,6 +57,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/location_mT"
         android:layout_alignBaseline="@+id/location_mEt"
-        android:layout_alignBottom="@+id/location_mEt"
-        android:layout_alignStart="@+id/textView" />
+        android:layout_alignBottom="@+id/location_mEt" />
 </RelativeLayout>

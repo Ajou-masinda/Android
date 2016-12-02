@@ -126,11 +126,12 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int position, long arg3){
             if(position>0) {
-                Intent intentModifyActivity =  new Intent(MainActivity.this, ConditionActivity.class);
-                intentModifyActivity.putExtra("name",PlugList.get(position-1).getName());
-                intentModifyActivity.putExtra("location",PlugList.get(position-1).getLocation());
-                intentModifyActivity.putExtra("ir",PlugList.get(position-1).getIR());
-                startActivityForResult(intentModifyActivity, 1);
+                Intent intentConditionActivity =  new Intent(MainActivity.this, ConditionActivity.class);
+                intentConditionActivity.putExtra("name",PlugList.get(position-1).getName());
+                intentConditionActivity.putExtra("location",PlugList.get(position-1).getLocation());
+                intentConditionActivity.putExtra("ir",PlugList.get(position-1).getIR());
+                intentConditionActivity.putExtra("id",position);
+                startActivityForResult(intentConditionActivity, 1);
                 /*
                 DbHandler.deleteContacnt(PlugList.get((position-1)));
                 adapter.deleteItem(position);
@@ -181,12 +182,20 @@ public class MainActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         // 넘어갔던 화면에서 되돌아 왔을 때
-        if (resultCode==RESULT_OK) { // 정상 반환일 경우에만 동작하겠다
+        if (resultCode==1) { // 정상 반환일 경우에만 동작하겠다
             Plug_Info plug_info = new Plug_Info( data.getStringExtra("name"),data.getStringExtra("location"),data.getIntExtra("ir",0),"192.168.43.55",0);
             PlugList.add(plug_info);
             adapter.addItem(plug_info.getName(),0);
             adapter.notifyDataSetChanged();
             DbHandler.addContact(plug_info);
+        }
+        else if(resultCode == 2){
+            DbHandler.updatePlug(PlugList.get((data.getIntExtra("id",0))-1),data.getStringExtra("name"),data.getStringExtra("location"));
+        }
+        else if(resultCode==3){
+            DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("id",0))-1));
+            adapter.deleteItem((data.getIntExtra("id",0)));
+            adapter.notifyDataSetChanged();
         }
     }
 

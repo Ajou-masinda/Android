@@ -80,8 +80,7 @@ public class AddActivity extends AppCompatActivity {
             intent.putExtra("name", NameEt.getText().toString());
             intent.putExtra("location", LocationEt.getText().toString());
             intent.putExtra("ir", ir);
-            //Toast.makeText(AddActivity.this, +ir , Toast.LENGTH_LONG).show();
-            setResult(RESULT_OK, intent);
+            setResult(1, intent);
             finish();
         }
     }

@@ -35,15 +35,6 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:text="ON/OFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="130dp"
-        android:id="@+id/OnOffB"
-        android:layout_below="@+id/locationT"
-        android:layout_centerHorizontal="true" />
-
-    <Button
         android:text="volume DOWN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,7 +76,7 @@
         android:layout_marginTop="61dp"
         android:id="@+id/volume_upB"
         android:layout_marginStart="14dp"
-        android:layout_below="@+id/OnOffB"
+        android:layout_below="@+id/OnB"
         android:layout_alignParentStart="true" />
 
     <Button
@@ -100,9 +91,28 @@
         android:text="channel up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
         android:id="@+id/channel_upB"
-        android:layout_alignBaseline="@+id/Tmp_upB"
-        android:layout_alignBottom="@+id/Tmp_upB"
-        android:layout_toEndOf="@+id/OnOffB" />
+        android:layout_alignBaseline="@+id/volume_upB"
+        android:layout_alignBottom="@+id/volume_upB"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="38dp" />
+
+    <Button
+        android:text="OFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/OnB"
+        android:layout_alignEnd="@+id/channel_upB"
+        android:id="@+id/OffB"
+        android:onClick="OnClickCondition" />
+
+    <Button
+        android:text="ON"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="133dp"
+        android:id="@+id/OnB"
+        android:onClick="OnClickCondition"
+        android:layout_below="@+id/locationSetT"
+        android:layout_alignStart="@+id/volume_upB" />
 </RelativeLayout>

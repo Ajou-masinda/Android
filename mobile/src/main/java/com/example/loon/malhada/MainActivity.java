@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,8 +20,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -65,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements
 
         connectServer = new ConnectServer("192.168.1.196", 3030);
         DbHandler = new DatabaseHandler(this);
+        AddBt = (Button) findViewById(R.id.AddBt);
         Plist = (ListView) findViewById(R.id.PList);
         try {
             DB = DbHandler.getWritableDatabase();
@@ -104,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
                  try{
                      // 걍 외우는게 좋다 -_-;
                      final ImageView iv = (ImageView)findViewById(R.id.imageV);
-                    URL url = new URL("http://image.hankookilbo.com/images201506/hankookilbo_bi.jpg");
+                    URL url = new URL("http://192.168.1.196:4242/q?start=2016/12/02-00:00:00&end=1s-ago&m=sum:test.test&o=&yrange=%5B0:%5D&wxh=1280x680&style=linespoint&png");
                     InputStream is = url.openStream();
                     final Bitmap bm = BitmapFactory.decodeStream(is);
                     handler.post(new Runnable() {
@@ -119,11 +117,18 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
         t.start();
-        final String finalMessage = "{"+"\"plug\":\"GET\""+"}";
+        JSONObject sObject = new JSONObject();
+        try {
+            sObject.put("REQ","GET");
+            sObject.put("MSG","LIST");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final String request = sObject.toString();
         Thread connect = new Thread(new Runnable() {
             @Override
             public void run() {
-                jsonstring = connectServer.sendJSON(finalMessage);
+                jsonstring = connectServer.sendJSON(request);
             }
         });
         connect.start();
@@ -147,14 +152,13 @@ public class MainActivity extends AppCompatActivity implements
                 plug.setStatus(jOBject.getInt("status"));
                 plug.setRegister(jOBject.getInt("register"));
                 plug.printAllelements();
-                if(plug.getRegister()!=1){
+                if(DbHandler.updatePlug(plug,plug.getName(),plug.getLocation(),plug.getType(),plug.getVendor(),0)==0){
                     DbHandler.addContact(plug);
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.v("myTag", "STRING : " +jsonstring + DbHandler.getCount() );
         Plist.setAdapter(adapter);
         Plist.setOnItemLongClickListener(longClickListener);
         adapter.addItem("이름",1);
@@ -169,17 +173,22 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int position, long arg3){
             if(position>0) {
-                Intent intentConditionActivity =  new Intent(MainActivity.this, ConditionActivity.class);
-                intentConditionActivity.putExtra("name",PlugList.get(position-1).getName());
-                intentConditionActivity.putExtra("location",PlugList.get(position-1).getLocation());
-                intentConditionActivity.putExtra("ir",PlugList.get(position-1).getType());
-                intentConditionActivity.putExtra("id",position);
-                startActivityForResult(intentConditionActivity, 1);
-                /*
-                DbHandler.deleteContacnt(PlugList.get((position-1)));
-                adapter.deleteItem(position);
-                adapter.notifyDataSetChanged();
-                */
+
+                Log.v("DD", "register = " +PlugList.get(position-1).getRegister() + "position" + position);
+                if(PlugList.get(position-1).getRegister() != 0)
+                {
+                    Intent intentModifyActivity =  new Intent(MainActivity.this, ModifyActivity.class);
+                    intentModifyActivity.putExtra("position",position);
+                    startActivityForResult(intentModifyActivity, 1);
+                }
+                else{
+                    Intent intentConditionActivity =  new Intent(MainActivity.this, ConditionActivity.class);
+                    intentConditionActivity.putExtra("name",PlugList.get(position-1).getName());
+                    intentConditionActivity.putExtra("location",PlugList.get(position-1).getLocation());
+                    intentConditionActivity.putExtra("type",PlugList.get(position-1).getType());
+                    intentConditionActivity.putExtra("position",position);
+                    startActivityForResult(intentConditionActivity, 1);
+                }
             }
             return false;
         }
@@ -190,13 +199,20 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
         googleClient.connect();
     }
-    public void OnClick(View v) throws InterruptedException {
+    public void OnClick(View v) {
         if(v==AddBt){
-            final String finalMessage = "{"+"\"plug\":\"GET\""+"}";
+            JSONObject sObject = new JSONObject();
+            try {
+                sObject.put("REQ","GET");
+                sObject.put("MSG","LIST");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            final String request = sObject.toString();
             Thread connect = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    jsonstring = connectServer.sendJSON(finalMessage);
+                    jsonstring = connectServer.sendJSON(request);
                 }
             });
             connect.start();
@@ -206,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements
                 e.printStackTrace();
             };
             try {
-
                 JSONArray jarray = new JSONArray(jsonstring);
                 for(int i=0; i<jarray.length(); i++)
                 {
@@ -220,13 +235,16 @@ public class MainActivity extends AppCompatActivity implements
                     plug.setStatus(jOBject.getInt("status"));
                     plug.setRegister(jOBject.getInt("register"));
                     plug.printAllelements();
-                    if(DbHandler.updatePlug(plug,plug.getName(),plug.getLocation(),plug.getType(),plug.getVendor())==0){
+                    if(DbHandler.updatePlug(plug,plug.getName(),plug.getLocation(),plug.getType(),plug.getVendor(),0)==0){
                         DbHandler.addContact(plug);
+                        PlugList.add(plug);
+                        adapter.addItem(plug.getName(),plug.getStatus());
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -254,44 +272,40 @@ public class MainActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         // 넘어갔던 화면에서 되돌아 왔을 때
-        if (resultCode==1) { // 정상 반환일 경우에만 동작하겠다
-            // Plug_Info plug_info = new Plug_Info( data.getStringExtra("name"),data.getStringExtra("location"),data.getIntExtra("ir",0),"192.168.43.55",0);
-            //PlugList.add(plug_info);
-            //adapter.addItem(plug_info.getName(), plug_info.getStatus());
-            //adapter.notifyDataSetChanged();
-            //DbHandler.addContact(plug_info);
-        }
-        else if(resultCode == 2){
-            //DbHandler.updatePlug(PlugList.get((data.getIntExtra("id",0))-1),data.getStringExtra("name"),data.getStringExtra("location"));
-        }
-        else if(resultCode==3){
-            //DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("id",0))-1));
-            //adapter.deleteItem((data.getIntExtra("id",0)));
-            //adapter.notifyDataSetChanged();
-        }
-    }
+        if(resultCode == 1){
+            Log.v("dd","return position : " + data.getIntExtra("position",0));
+            DbHandler.updatePlug(PlugList.get((data.getIntExtra("position",0))-1),data.getExtras().getString("name"),data.getExtras().getString("location"),data.getExtras().getInt("type"),data.getExtras().getInt("vendor"),1);
 
-    class SendToDataLayerThread extends Thread {
-        String path;
-        String message;
-
-        // Constructor to send a message to the data layer
-        SendToDataLayerThread(String p, String msg) {
-            path = p;
-            message = msg;
-        }
-
-        public void run() {
-            NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes(googleClient).await();
-            for (Node node : nodes.getNodes()) {
-                MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(googleClient, node.getId(), path, message.getBytes()).await();
-                if (result.getStatus().isSuccess()) {
-                    Log.v("myTag", "Message: {" + message + "} sent to: " + node.getDisplayName());
-                } else {
-                    // Log an error
-                    Log.v("myTag", "ERROR: failed to send Message");
-                }
+            JSONObject sObject = new JSONObject();//
+            try {
+                sObject.put("name",data.getExtras().getString("name"));
+                sObject.put("locate",data.getExtras().getString("location"));
+                sObject.put("type",data.getExtras().getInt("type"));
+                sObject.put("vendor",data.getExtras().getInt("vendor"));
+                sObject.put("serial",PlugList.get((data.getIntExtra("position",0))-1).getSerial());
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            JSONObject Rejson = new JSONObject();
+            try {
+                Rejson.put("REQ","SET");
+                Rejson.put("MSG",sObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            final String request = Rejson.toString();
+            Thread connect = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    jsonstring = connectServer.sendJSON(request);
+                }
+            });
+            connect.start();
+        }
+        else if(resultCode==2){
+            DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("postion",0))-1));
+            adapter.deleteItem((data.getIntExtra("postion",0)));
+            adapter.notifyDataSetChanged();
         }
     }
 }

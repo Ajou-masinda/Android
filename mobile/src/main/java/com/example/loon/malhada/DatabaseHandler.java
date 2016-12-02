@@ -52,7 +52,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_STATUS,  Integer.toString(plug_info.getStatus()));
         values.put(KEY_REGIST,  Integer.toString(plug_info.getRegister()));
         db.insert(TABLE_CONTACTS,null,values);
-        Log.v("dd", "good add");
         db.close();
     }
     public List<Plug_Info> getAllCustomer_Info()    {
@@ -87,13 +86,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete(TABLE_CONTACTS,KEY_SERIAL + "=?", new String[] {plug_info.getSerial()});
         db.close();
     }
-    public  int updatePlug(Plug_Info plug_info, String name, String location,int type, int vendor){
+    public  int updatePlug(Plug_Info plug_info, String name, String location,int type, int vendor,int regist){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_NAME,name);
         values.put(KEY_LOCATION,location);
         values.put(KEY_TYPE,type);
         values.put(KEY_VENDOR,vendor);
+        values.put(KEY_REGIST,regist);
         return db.update(TABLE_CONTACTS,values,KEY_SERIAL + " =?",new String[] {plug_info.getSerial()});
     }
 }

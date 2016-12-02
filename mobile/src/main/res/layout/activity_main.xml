@@ -49,8 +49,8 @@
                 android:layout_toStartOf="@+id/button4" />
 
             <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="1280dp"
+                android:layout_height="680dp"
                 app:srcCompat="@color/cast_expanded_controller_background_color"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"

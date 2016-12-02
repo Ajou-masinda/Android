@@ -34,6 +34,10 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,8 +45,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+    ConnectServer connectServer;
     DatabaseHandler DbHandler;
     ViewFlipper page;
+    String jsonstring;
     GoogleApiClient googleClient;
     List<Plug_Info> PlugList = new ArrayList<Plug_Info>();
     Button AddBt;
@@ -56,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Build a new DatabaseHandler
+
+        connectServer = new ConnectServer("192.168.1.196", 3030);
         DbHandler = new DatabaseHandler(this);
         Plist = (ListView) findViewById(R.id.PList);
         try {
@@ -111,14 +119,46 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
         t.start();
-        AddBt = (Button) findViewById(R.id.AddBt);
+        final String finalMessage = "{"+"\"plug\":\"GET\""+"}";
+        Thread connect = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                jsonstring = connectServer.sendJSON(finalMessage);
+            }
+        });
+        connect.start();
+        try {
+            connect.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        };
+        try {
+            JSONArray jarray = new JSONArray(jsonstring);
+            for(int i=0; i<jarray.length(); i++)
+            {
+                JSONObject jOBject = jarray.getJSONObject(i);
+                Plug_Info plug = new Plug_Info();
+                plug.setName(jOBject.getString("name"));
+                plug.setLocation(jOBject.getString("location"));
+                plug.setType(jOBject.getInt("type"));
+                plug.setVendor(jOBject.getInt("vendor"));
+                plug.setSerial(jOBject.getString("serial"));
+                plug.setStatus(jOBject.getInt("status"));
+                plug.setRegister(jOBject.getInt("register"));
+                if(plug.getRegister()!=1){
+                    DbHandler.addContact(plug);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         Plist.setAdapter(adapter);
         Plist.setOnItemLongClickListener(longClickListener);
         adapter.addItem("이름",1);
         PlugList = DbHandler.getAllCustomer_Info();
         for(int i=0; i< PlugList.size(); i++)
         {
-            adapter.addItem(PlugList.get(i).getName(),PlugList.get(i).getIR());
+            adapter.addItem(PlugList.get(i).getName(),PlugList.get(i).getStatus());
         }
     }
     private AdapterView.OnItemLongClickListener longClickListener = new AdapterView.OnItemLongClickListener() {
@@ -129,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements
                 Intent intentConditionActivity =  new Intent(MainActivity.this, ConditionActivity.class);
                 intentConditionActivity.putExtra("name",PlugList.get(position-1).getName());
                 intentConditionActivity.putExtra("location",PlugList.get(position-1).getLocation());
-                intentConditionActivity.putExtra("ir",PlugList.get(position-1).getIR());
+                intentConditionActivity.putExtra("ir",PlugList.get(position-1).getType());
                 intentConditionActivity.putExtra("id",position);
                 startActivityForResult(intentConditionActivity, 1);
                 /*
@@ -147,14 +187,19 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
         googleClient.connect();
     }
-    public void OnClick(View v)
-    {
+    public void OnClick(View v) throws InterruptedException {
         if(v==AddBt){
+            final String finalMessage = "{"+"\"plug\":\"GET\""+"}";
+            Thread connect = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectServer.sendJSON(finalMessage);
+                }
+            });
+            connect.start();
+            connect.join();
             Intent intentAddActivity =  new Intent(MainActivity.this, AddActivity.class);
             startActivityForResult(intentAddActivity, 1);
-        }
-        else{
-
         }
     }
 
@@ -183,19 +228,19 @@ public class MainActivity extends AppCompatActivity implements
                                     Intent data) {
         // 넘어갔던 화면에서 되돌아 왔을 때
         if (resultCode==1) { // 정상 반환일 경우에만 동작하겠다
-            Plug_Info plug_info = new Plug_Info( data.getStringExtra("name"),data.getStringExtra("location"),data.getIntExtra("ir",0),"192.168.43.55",0);
-            PlugList.add(plug_info);
-            adapter.addItem(plug_info.getName(),0);
-            adapter.notifyDataSetChanged();
-            DbHandler.addContact(plug_info);
+            // Plug_Info plug_info = new Plug_Info( data.getStringExtra("name"),data.getStringExtra("location"),data.getIntExtra("ir",0),"192.168.43.55",0);
+            //PlugList.add(plug_info);
+            //adapter.addItem(plug_info.getName(), plug_info.getStatus());
+            //adapter.notifyDataSetChanged();
+            //DbHandler.addContact(plug_info);
         }
         else if(resultCode == 2){
-            DbHandler.updatePlug(PlugList.get((data.getIntExtra("id",0))-1),data.getStringExtra("name"),data.getStringExtra("location"));
+            //DbHandler.updatePlug(PlugList.get((data.getIntExtra("id",0))-1),data.getStringExtra("name"),data.getStringExtra("location"));
         }
         else if(resultCode==3){
-            DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("id",0))-1));
-            adapter.deleteItem((data.getIntExtra("id",0)));
-            adapter.notifyDataSetChanged();
+            //DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("id",0))-1));
+            //adapter.deleteItem((data.getIntExtra("id",0)));
+            //adapter.notifyDataSetChanged();
         }
     }
 

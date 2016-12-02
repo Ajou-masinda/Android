@@ -34,7 +34,7 @@ public class PlugAdapter extends BaseAdapter {
         TextView conView = (TextView) convertView.findViewById(R.id.conTv) ;
         PlugList listViewItem = listViewItemList.get(pos);
         nameView.setText(listViewItem.getName());
-        conView.setText(String.valueOf(listViewItem.getCondition()));
+        conView.setText(String.valueOf(listViewItem.getStatus()));
         return convertView;
     }
     @Override
@@ -49,7 +49,7 @@ public class PlugAdapter extends BaseAdapter {
     public void addItem(String name, int con) {
         PlugList item = new PlugList();
         item.setName(name);
-        item.setCondition(con);
+        item.setStatus(con);
         listViewItemList.add(item);
         return;
     }

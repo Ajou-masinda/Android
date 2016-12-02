@@ -5,30 +5,79 @@ package com.example.loon.malhada;
  */
 
 public class Plug_Info {
-    private  int id, IR, condition;
-    private  String location, name, ip;
+    private  int id;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    private int type;
+    private int vendor;
+    private int status;
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getRegister() {
+        return register;
+    }
+
+    public void setRegister(int register) {
+        this.register = register;
+    }
+
+    public int getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(int vendor) {
+        this.vendor = vendor;
+    }
+
+    private int register;
+    private  String location;
+    private  String name;
+    private  String serial;
     public Plug_Info() {
     }
-    public Plug_Info(int id, String name, String location, int IR, String ip, int condition){
+    public Plug_Info(int id, String name, String location, String serial, int status,int type, int vendor, int register){
         this.id = id;
         this.name = name;
         this.location = location;
-        this.IR = IR;
-        this.ip = ip;
-        this.condition = condition;
+        this.status = status;
+        this.serial=serial;
+        this.type = type;
+        this.vendor = vendor;
+        this.register = register;
     }
-    public Plug_Info(String name, String location, int IR, String ip, int condition){
+    public Plug_Info(String name, String location, String serial, int status,int type, int vendor, int register){
         this.name = name;
         this.location = location;
-        this.IR = IR;
-        this.ip = ip;
-        this.condition = condition;
+        this.status = status;
+        this.type = type;
+        this.serial=serial;
+        this.vendor = vendor;
+        this.register = register;
     }
     public int getId() {
         return id;
-    }
-    public int getIR() {
-        return IR;
     }
     public String getLocation() {
         return location;
@@ -36,13 +85,8 @@ public class Plug_Info {
     public String getName() {
         return name;
     }
-    public String getIp() { return ip; }
-    public int isCondition() {return condition;}
     public void setId(int id) {
         this.id = id;
-    }
-    public void setIR(int IR) {
-        this.IR = IR;
     }
     public void setLocation(String location) {
         this.location = location;
@@ -50,6 +94,4 @@ public class Plug_Info {
     public void setName(String name) {
         this.name = name;
     }
-    public void setCondition(int condition) {this.condition = condition;}
-    public void setIp(String ip) {this.ip = ip;}
 }

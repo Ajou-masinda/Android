@@ -6,9 +6,9 @@ package com.example.loon.malhada;
 
 public class PlugList {
     private String name;
-    private int condition;
+    private int status;
     public void setName(String name) {this.name = name;}
     public String getName() {return name;}
-    public int getCondition() {return condition;}
-    public void setCondition(int condition) {this.condition = condition;}
+    public int getStatus() {return status;}
+    public void setStatus(int status) {this.status = status;}
 }

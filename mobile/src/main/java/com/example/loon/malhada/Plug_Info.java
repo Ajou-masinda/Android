@@ -1,5 +1,7 @@
 package com.example.loon.malhada;
 
+import android.util.Log;
+
 /**
  * Created by loon on 2016-11-14.
  */
@@ -56,6 +58,7 @@ public class Plug_Info {
     private  String name;
     private  String serial;
     public Plug_Info() {
+
     }
     public Plug_Info(int id, String name, String location, String serial, int status,int type, int vendor, int register){
         this.id = id;
@@ -93,5 +96,8 @@ public class Plug_Info {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public void printAllelements() {
+        Log.v("dd", ""+name + location + status + type + serial + vendor + register);
     }
 }

@@ -133,18 +133,20 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         };
         try {
+
             JSONArray jarray = new JSONArray(jsonstring);
             for(int i=0; i<jarray.length(); i++)
             {
                 JSONObject jOBject = jarray.getJSONObject(i);
                 Plug_Info plug = new Plug_Info();
                 plug.setName(jOBject.getString("name"));
-                plug.setLocation(jOBject.getString("location"));
+                plug.setLocation(jOBject.getString("locate"));
                 plug.setType(jOBject.getInt("type"));
                 plug.setVendor(jOBject.getInt("vendor"));
                 plug.setSerial(jOBject.getString("serial"));
                 plug.setStatus(jOBject.getInt("status"));
                 plug.setRegister(jOBject.getInt("register"));
+                plug.printAllelements();
                 if(plug.getRegister()!=1){
                     DbHandler.addContact(plug);
                 }
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.v("myTag", "STRING : " +jsonstring + DbHandler.getCount() );
         Plist.setAdapter(adapter);
         Plist.setOnItemLongClickListener(longClickListener);
         adapter.addItem("이름",1);
@@ -193,13 +196,37 @@ public class MainActivity extends AppCompatActivity implements
             Thread connect = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    connectServer.sendJSON(finalMessage);
+                    jsonstring = connectServer.sendJSON(finalMessage);
                 }
             });
             connect.start();
-            connect.join();
-            Intent intentAddActivity =  new Intent(MainActivity.this, AddActivity.class);
-            startActivityForResult(intentAddActivity, 1);
+            try {
+                connect.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            };
+            try {
+
+                JSONArray jarray = new JSONArray(jsonstring);
+                for(int i=0; i<jarray.length(); i++)
+                {
+                    JSONObject jOBject = jarray.getJSONObject(i);
+                    Plug_Info plug = new Plug_Info();
+                    plug.setName(jOBject.getString("name"));
+                    plug.setLocation(jOBject.getString("locate"));
+                    plug.setType(jOBject.getInt("type"));
+                    plug.setVendor(jOBject.getInt("vendor"));
+                    plug.setSerial(jOBject.getString("serial"));
+                    plug.setStatus(jOBject.getInt("status"));
+                    plug.setRegister(jOBject.getInt("register"));
+                    plug.printAllelements();
+                    if(DbHandler.updatePlug(plug,plug.getName(),plug.getLocation(),plug.getType(),plug.getVendor())==0){
+                        DbHandler.addContact(plug);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +52,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_STATUS,  Integer.toString(plug_info.getStatus()));
         values.put(KEY_REGIST,  Integer.toString(plug_info.getRegister()));
         db.insert(TABLE_CONTACTS,null,values);
+        Log.v("dd", "good add");
         db.close();
     }
     public List<Plug_Info> getAllCustomer_Info()    {

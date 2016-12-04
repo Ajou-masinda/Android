@@ -60,16 +60,6 @@
         android:id="@+id/tmp_downB" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="19dp"
-        android:id="@+id/modifyB"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/tmp_downB"
-        android:onClick="OnClickCondition"
-        android:text="modify" />
-
-    <Button
         android:text="volume UP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -115,4 +105,14 @@
         android:onClick="OnClickCondition"
         android:layout_below="@+id/locationSetT"
         android:layout_alignStart="@+id/volume_upB" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="17dp"
+        android:id="@+id/modifyB"
+        android:onClick="OnClickCondition"
+        android:text="modify"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

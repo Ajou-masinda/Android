@@ -6,9 +6,9 @@ package com.example.loon.malhada;
 
 public class PlugList {
     private String name;
-    private int status;
+    private String serial;
     public void setName(String name) {this.name = name;}
     public String getName() {return name;}
-    public int getStatus() {return status;}
-    public void setStatus(int status) {this.status = status;}
+    public String getSerial() {return serial;}
+    public void setSerial(String serial) {this.serial = serial;}
 }

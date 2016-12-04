@@ -34,22 +34,27 @@ public class PlugAdapter extends BaseAdapter {
         TextView conView = (TextView) convertView.findViewById(R.id.conTv) ;
         PlugList listViewItem = listViewItemList.get(pos);
         nameView.setText(listViewItem.getName());
-        conView.setText(String.valueOf(listViewItem.getStatus()));
+        conView.setText(String.valueOf(listViewItem.getSerial()));
         return convertView;
     }
     @Override
     public long getItemId(int position) {
         return position ;
     }
-
+    public  void clear(){
+        int size = listViewItemList.size();
+        while(size--!=0){
+            listViewItemList.remove(0);
+        }
+    }
     @Override
     public Object getItem(int position) {
         return listViewItemList.get(position) ;
     }
-    public void addItem(String name, int con) {
+    public void addItem(String name, String serial) {
         PlugList item = new PlugList();
         item.setName(name);
-        item.setStatus(con);
+        item.setSerial(serial);
         listViewItemList.add(item);
         return;
     }

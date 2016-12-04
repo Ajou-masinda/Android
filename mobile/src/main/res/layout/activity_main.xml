@@ -33,19 +33,19 @@
                 android:id="@+id/button4" />
 
             <TextView
-                android:text="TextView"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView4"
-                android:layout_alignBaseline="@+id/textView3"
-                android:layout_alignBottom="@+id/textView3"
+                android:id="@+id/tmpT"
+                android:layout_alignBaseline="@+id/humT"
+                android:layout_alignBottom="@+id/humT"
                 android:layout_toEndOf="@+id/button4" />
 
             <TextView
-                android:text="TextView"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView3"
+                android:id="@+id/humT"
                 android:layout_toStartOf="@+id/button4" />
 
             <ImageView

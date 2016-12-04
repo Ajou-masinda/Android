@@ -86,6 +86,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete(TABLE_CONTACTS,KEY_SERIAL + "=?", new String[] {plug_info.getSerial()});
         db.close();
     }
+    public void deleteAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CONTACTS, null, null);
+    }
+
     public  int updatePlug(Plug_Info plug_info, String name, String location,int type, int vendor,int regist){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

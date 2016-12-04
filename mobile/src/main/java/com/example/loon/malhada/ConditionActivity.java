@@ -23,7 +23,7 @@ public class ConditionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.plugcondition);
-        connectServer = new ConnectServer("192.168.1.196", 3030);
+        connectServer = new ConnectServer("202.30.29.209", 3030);
         intent = getIntent();
         nameText = (TextView) findViewById(R.id.nameSetT);
         locationText = (TextView) findViewById(R.id.locationSetT);

@@ -9,8 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,9 +62,10 @@ public class MainActivity extends AppCompatActivity implements
     DatabaseHandler DbHandler;
     ViewFlipper page;
     String jsonstring;
+    ArrayList<String> mResult;
     GoogleApiClient googleClient;
     List<Plug_Info> PlugList = new ArrayList<Plug_Info>();
-    Button AddBt;
+    Button AddBt,STTB1,STTB2;
     TextView tmpT, humT;
     ListView Plist;
     PlugAdapter adapter = new PlugAdapter();
@@ -75,12 +78,14 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         // Build a new DatabaseHandler
 
-        connectServer = new ConnectServer("192.168.1.196", 3030);
+        connectServer = new ConnectServer("202.30.29.209", 3030);
         DbHandler = new DatabaseHandler(this);
         AddBt = (Button) findViewById(R.id.AddBt);
         tmpT = (TextView) findViewById(R.id.tmpT);
         humT = (TextView) findViewById(R.id.humT);
         Plist = (ListView) findViewById(R.id.PList);
+        STTB1 = (Button) findViewById(R.id.STTB1);
+        STTB2 = (Button) findViewById(R.id.STTB2);
         try {
             DB = DbHandler.getWritableDatabase();
         } catch (SQLiteAbortException ex){
@@ -117,15 +122,15 @@ public class MainActivity extends AppCompatActivity implements
              public void run() { // 오래 거릴 작업을 구현한다
                  // TODO Auto-generated method stub
                  try {
-                     humT.setText(getHttp("http://192.168.1.196:4242/api/query/last?timeseries=test.test%7Bhost=house1_hum%7D&back_scan=24&resolve=true")+"%");
-                     tmpT.setText(getHttp("http://192.168.1.196:4242/api/query/last?timeseries=test.test%7Bhost=house1_temp%7D&back_scan=24&resolve=true")+"°C");
+                     humT.setText(getHttp("http://202.30.29.209:4242/api/query/last?timeseries=test.test%7Bhost=house1_hum%7D&back_scan=24&resolve=true")+"%");
+                     tmpT.setText(getHttp("http://202.30.29.209:4242/api/query/last?timeseries=test.test%7Bhost=house1_temp%7D&back_scan=24&resolve=true")+"°C");
                      // 걍 외우는게 좋다 -_-;
                      final ImageView iv = (ImageView) findViewById(R.id.imageV);
                      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                      String currentDateTimeString;
                      URL url;
                          currentDateTimeString = dateFormat.format(new Date(System.currentTimeMillis() - 1800000));
-                         url = new URL("http://192.168.1.196:4242/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
+                         url = new URL("http://202.30.29.209:4242/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
                          InputStream is = url.openStream();
                          final Bitmap bm = BitmapFactory.decodeStream(is);
                          handler.post(new Runnable() {
@@ -192,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements
         Plist.setAdapter(adapter);
         Plist.setOnItemLongClickListener(longClickListener);
         chaingeActivity();
+
     }
     private AdapterView.OnItemLongClickListener longClickListener = new AdapterView.OnItemLongClickListener() {
 
@@ -267,6 +273,13 @@ public class MainActivity extends AppCompatActivity implements
             }
             chaingeActivity();
         }
+        else if(v==STTB1 || v==STTB2){
+            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+            i.putExtra(RecognizerIntent.EXTRA_PROMPT, "말하세요.");
+            startActivityForResult(i, 100);
+        }
     }
 
     @Override
@@ -293,63 +306,90 @@ public class MainActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         // 넘어갔던 화면에서 되돌아 왔을 때
-        if(resultCode == 1){
-            Log.v("dd","return position : " + data.getIntExtra("position",0));
-            DbHandler.updatePlug(PlugList.get((data.getIntExtra("position",0))-1),data.getExtras().getString("name"),data.getExtras().getString("location"),data.getExtras().getInt("type"),data.getExtras().getInt("vendor"),1);
-
-            JSONObject sObject = new JSONObject();//
-            try {
-                sObject.put("name",data.getExtras().getString("name"));
-                sObject.put("locate",data.getExtras().getString("location"));
-                sObject.put("type",data.getExtras().getInt("type"));
-                sObject.put("vendor",data.getExtras().getInt("vendor"));
-                sObject.put("serial",PlugList.get((data.getIntExtra("position",0))-1).getSerial());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            JSONObject Rejson = new JSONObject();
-            try {
-                Rejson.put("REQ","SET");
-                Rejson.put("ACTION","MODIFY");
-                Rejson.put("MSG",sObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            final String request = Rejson.toString();
-            Thread connect = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    jsonstring = connectServer.sendJSON(request);
+        if(requestCode==100){
+            if(resultCode==RESULT_OK){
+                String key = "";
+                key = RecognizerIntent.EXTRA_RESULTS;
+                mResult = data.getStringArrayListExtra(key);
+                String[] result = new String[mResult.size()];
+                mResult.toArray(result);
+                mResult.set(0,mResult.get(0).replace(" ", ""));
+                JSONObject Rejson = new JSONObject();
+                try {
+                    Rejson.put("REQ","COMMAND");
+                    Rejson.put("MSG",mResult.get(0));
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            });
-            connect.start();
-            chaingeActivity();
+                final String request = Rejson.toString();
+                Thread connect = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        connectServer.sendJSON(request);
+                    }
+                });
+                connect.start();
+            }
         }
-        else if(resultCode==2){
-            DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("postion",0))-1));
-            JSONObject sObject = new JSONObject();//
-            try {
-                sObject.put("serial",PlugList.get((data.getIntExtra("position",0))-1).getSerial());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            JSONObject Rejson = new JSONObject();
-            try {
-                Rejson.put("REQ","SET");
-                Rejson.put("ACTION","DELTE");
-                Rejson.put("MSG",sObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            final String request = Rejson.toString();
-            Thread connect = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    jsonstring = connectServer.sendJSON(request);
+        else{
+            if(resultCode == 1){
+                Log.v("dd","return position : " + data.getIntExtra("position",0));
+                DbHandler.updatePlug(PlugList.get((data.getIntExtra("position",0))-1),data.getExtras().getString("name"),data.getExtras().getString("location"),data.getExtras().getInt("type"),data.getExtras().getInt("vendor"),1);
+
+                JSONObject sObject = new JSONObject();//
+                try {
+                    sObject.put("name",data.getExtras().getString("name"));
+                    sObject.put("locate",data.getExtras().getString("location"));
+                    sObject.put("type",data.getExtras().getInt("type"));
+                    sObject.put("vendor",data.getExtras().getInt("vendor"));
+                    sObject.put("serial",PlugList.get((data.getIntExtra("position",0))-1).getSerial());
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            });
-            connect.start();
-            chaingeActivity();
+                JSONObject Rejson = new JSONObject();
+                try {
+                    Rejson.put("REQ","SET");
+                    Rejson.put("ACTION","MODIFY");
+                    Rejson.put("MSG",sObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                final String request = Rejson.toString();
+                Thread connect = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        jsonstring = connectServer.sendJSON(request);
+                    }
+                });
+                connect.start();
+                chaingeActivity();
+            }
+            else if(resultCode==2){
+                DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("position",0))-1));
+                JSONObject sObject = new JSONObject();//
+                try {
+                    sObject.put("serial",PlugList.get((data.getIntExtra("position",0))-1).getSerial());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JSONObject Rejson = new JSONObject();
+                try {
+                    Rejson.put("REQ","SET");
+                    Rejson.put("ACTION","DELETE");
+                    Rejson.put("MSG",sObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                final String request = Rejson.toString();
+                Thread connect = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        jsonstring = connectServer.sendJSON(request);
+                    }
+                });
+                connect.start();
+                chaingeActivity();
+            }
         }
     }
     private String getHttp(String url)throws Exception{

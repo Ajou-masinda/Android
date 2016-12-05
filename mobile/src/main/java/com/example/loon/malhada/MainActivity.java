@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements
     Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Build a new DatabaseHandler
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements
                      String currentDateTimeString;
                      URL url;
                          currentDateTimeString = dateFormat.format(new Date(System.currentTimeMillis() - 1800000));
+                         Log.v("MAIN ACTIVITY", "CURRENT TIME : " + currentDateTimeString);
                          url = new URL("http://202.30.29.209:4242/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
                          InputStream is = url.openStream();
                          final Bitmap bm = BitmapFactory.decodeStream(is);
@@ -164,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements
         Thread connect = new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.v("MAIN ACTIVITY", "GET Plug LIST - Request to Deudnunda");
                 jsonstring = connectServer.sendJSON(request);
             }
         });
@@ -225,7 +229,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     };
 
-
     protected void onStart() {
         super.onStart();
         googleClient.connect();
@@ -243,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements
             Thread connect = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.v("MAIN ACTIVITY", "GET Plug LIST - Request to Deudnunda");
                     jsonstring = connectServer.sendJSON(request);
                 }
             });
@@ -299,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.v("MAIN ACTIVITY","=== CONNECTION FAIL ===");
     }
 
     @Override
@@ -408,10 +412,10 @@ public class MainActivity extends AppCompatActivity implements
     }
     private void chaingeActivity(){
         adapter.clear();
-        adapter.addItem("NAME","SERIAL");
+        //adapter.addItem("NAME","SERIAL");
         PlugList = DbHandler.getAllCustomer_Info();
         for(int i=0; i< PlugList.size(); i++)
-            adapter.addItem(PlugList.get(i).getName(),PlugList.get(i).getSerial());
+            adapter.addItem(PlugList.get(i).getName(),PlugList.get(i).getSerial(),PlugList.get(i).getRegister());
         adapter.notifyDataSetChanged();
     }
 }

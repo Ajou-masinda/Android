@@ -1,6 +1,7 @@
 package com.example.loon.malhada;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,11 @@ public class PlugAdapter extends BaseAdapter {
         TextView conView = (TextView) convertView.findViewById(R.id.conTv) ;
         PlugList listViewItem = listViewItemList.get(pos);
         nameView.setText(listViewItem.getName());
-        conView.setText(String.valueOf(listViewItem.getSerial()));
+
+        if(listViewItem.getRegister() < 1) {
+            nameView.setTextColor(Color.parseColor("#FFCACACA"));
+        }
+        conView.setText("Plug Serial : " + String.valueOf(listViewItem.getSerial()));
         return convertView;
     }
     @Override
@@ -51,10 +56,11 @@ public class PlugAdapter extends BaseAdapter {
     public Object getItem(int position) {
         return listViewItemList.get(position) ;
     }
-    public void addItem(String name, String serial) {
+    public void addItem(String name, String serial, int register) {
         PlugList item = new PlugList();
         item.setName(name);
         item.setSerial(serial);
+        item.setRegister(register);
         listViewItemList.add(item);
         return;
     }

@@ -62,7 +62,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             do{
                 Plug_Info plug_info = new Plug_Info();
-                plug_info.setName(cursor.getString(1));
+
+                String plug_name = (Integer.parseInt(cursor.getString(7)) > 0) ? cursor.getString(1) : "등록된 제품이 없습니다";
+                plug_info.setName(plug_name);
                 plug_info.setLocation(cursor.getString(2));
                 plug_info.setType(Integer.parseInt(cursor.getString(3)));
                 plug_info.setVendor(Integer.parseInt(cursor.getString(4)));

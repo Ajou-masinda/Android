@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements
         tmpT = (TextView) findViewById(R.id.tmpT);
         humT = (TextView) findViewById(R.id.humT);
         Plist = (ListView) findViewById(R.id.PList);
-        STTB1 = (Button) findViewById(R.id.STTB1);
-        STTB2 = (Button) findViewById(R.id.STTB2);
+        //STTB1 = (Button) findViewById(R.id.STTB1);
+        //STTB2 = (Button) findViewById(R.id.STTB2);
         try {
             DB = DbHandler.getWritableDatabase();
         } catch (SQLiteAbortException ex){
@@ -277,13 +277,6 @@ public class MainActivity extends AppCompatActivity implements
             }
             chaingeActivity();
         }
-        else if(v==STTB1 || v==STTB2){
-            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-            i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
-            i.putExtra(RecognizerIntent.EXTRA_PROMPT, "말하세요.");
-            startActivityForResult(i, 100);
-        }
     }
 
     @Override
@@ -417,5 +410,13 @@ public class MainActivity extends AppCompatActivity implements
         for(int i=0; i< PlugList.size(); i++)
             adapter.addItem(PlugList.get(i).getName(),PlugList.get(i).getSerial(),PlugList.get(i).getRegister());
         adapter.notifyDataSetChanged();
+    }
+
+    public void operateMalhanda(View v) {
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+        i.putExtra(RecognizerIntent.EXTRA_PROMPT, "말하세요.");
+        startActivityForResult(i, 100);
     }
 }

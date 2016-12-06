@@ -55,4 +55,5 @@ public class MainService extends Service {
             //editText.setText(message);
         }
     }
+
 }

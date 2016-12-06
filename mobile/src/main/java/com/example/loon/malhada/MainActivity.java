@@ -207,10 +207,8 @@ public class MainActivity extends AppCompatActivity implements
 
         @Override
         public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int position, long arg3){
-            if(position>0) {
-
-                Log.v("DD", "register = " +PlugList.get(position-1).getRegister() + "position" + position);
-                if(PlugList.get(position-1).getRegister() != 1)
+                Log.v("DD", "register = " +PlugList.get(position).getRegister() + "position" + position);
+                if(PlugList.get(position).getRegister() != 1)
                 {
                     Intent intentModifyActivity =  new Intent(MainActivity.this, ModifyActivity.class);
                     intentModifyActivity.putExtra("position",position);
@@ -218,13 +216,12 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 else{
                     Intent intentConditionActivity =  new Intent(MainActivity.this, ConditionActivity.class);
-                    intentConditionActivity.putExtra("name",PlugList.get(position-1).getName());
-                    intentConditionActivity.putExtra("location",PlugList.get(position-1).getLocation());
-                    intentConditionActivity.putExtra("type",PlugList.get(position-1).getType());
+                    intentConditionActivity.putExtra("name",PlugList.get(position).getName());
+                    intentConditionActivity.putExtra("location",PlugList.get(position).getLocation());
+                    intentConditionActivity.putExtra("type",PlugList.get(position).getType());
                     intentConditionActivity.putExtra("position",position);
                     startActivityForResult(intentConditionActivity, 1);
                 }
-            }
             return false;
         }
     };
@@ -331,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements
         else{
             if(resultCode == 1){
                 Log.v("dd","return position : " + data.getIntExtra("position",0));
-                DbHandler.updatePlug(PlugList.get((data.getIntExtra("position",0))-1),data.getExtras().getString("name"),data.getExtras().getString("location"),data.getExtras().getInt("type"),data.getExtras().getInt("vendor"),1);
+                DbHandler.updatePlug(PlugList.get((data.getIntExtra("position",0))),data.getExtras().getString("name"),data.getExtras().getString("location"),data.getExtras().getInt("type"),data.getExtras().getInt("vendor"),1);
 
                 JSONObject sObject = new JSONObject();//
                 try {
@@ -339,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements
                     sObject.put("locate",data.getExtras().getString("location"));
                     sObject.put("type",data.getExtras().getInt("type"));
                     sObject.put("vendor",data.getExtras().getInt("vendor"));
-                    sObject.put("serial",PlugList.get((data.getIntExtra("position",0))-1).getSerial());
+                    sObject.put("serial",PlugList.get((data.getIntExtra("position",0))).getSerial());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -362,10 +359,10 @@ public class MainActivity extends AppCompatActivity implements
                 chaingeActivity();
             }
             else if(resultCode==2){
-                DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("position",0))-1));
+                DbHandler.deleteContacnt(PlugList.get((data.getIntExtra("position",0))));
                 JSONObject sObject = new JSONObject();//
                 try {
-                    sObject.put("serial",PlugList.get((data.getIntExtra("position",0))-1).getSerial());
+                    sObject.put("serial",PlugList.get((data.getIntExtra("position",0))).getSerial());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

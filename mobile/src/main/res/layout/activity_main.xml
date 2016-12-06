@@ -10,7 +10,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#FFF">
 
         <ViewFlipper
             android:layout_width="match_parent"
@@ -30,22 +31,50 @@
                     android:paddingRight="15dp"
                     android:paddingTop="30dp">
 
-                    <TextView
-                        android:text=""
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tmpT" />
+                    <RelativeLayout
+                        android:id="@+id/logo_layout"
+                        android:layout_width="250dp"
+                        android:layout_height="250dp"
+                        android:layout_centerHorizontal="true">
+                    
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:scaleType="fitXY"
+                            android:maxHeight="100dp"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/malhanda_logo"/>
 
-                    <TextView
-                        android:text=""
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/text_layout"
+                        android:layout_below="@+id/logo_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/humT"
-                        android:layout_below="@id/tmpT"/>
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:text=""
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tmpT"
+                            android:layout_marginRight="20dp"/>
+
+                        <TextView
+                            android:text=""
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/humT"
+                            android:layout_toRightOf="@id/tmpT"/>
+
+                    </RelativeLayout>
+
 
                     <ImageView
+                        android:layout_below="@id/text_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:srcCompat="@color/cast_expanded_controller_background_color"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"
@@ -67,15 +96,25 @@
                 <RelativeLayout
                     android:id="@+id/refresh_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right">
+                    android:layout_height="100dp"
+                    android:background="#FFF"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
 
-                    <Button
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/refresh"
-                        android:id="@+id/AddBt"
-                        android:onClick="OnClick"/>
+                        android:gravity="right">
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/refresh"
+                            android:id="@+id/AddBt"
+                            android:onClick="OnClick"
+                            android:layout_marginRight="10dp"/>
+
+                    </RelativeLayout>
 
                 </RelativeLayout>
 

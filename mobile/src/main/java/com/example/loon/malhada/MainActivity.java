@@ -1,20 +1,16 @@
 package com.example.loon.malhada;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.sqlite.SQLiteAbortException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,12 +24,7 @@ import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -45,16 +36,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static java.lang.Thread.sleep;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -124,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements
              public void run() { // 오래 거릴 작업을 구현한다
                  // TODO Auto-generated method stub
                  try {
-                     humT.setText(getHttp("http://202.30.29.209:4242/api/query/last?timeseries=test.test%7Bhost=house1_hum%7D&back_scan=24&resolve=true")+"%");
-                     tmpT.setText(getHttp("http://202.30.29.209:4242/api/query/last?timeseries=test.test%7Bhost=house1_temp%7D&back_scan=24&resolve=true")+"°C");
+                     humT.setText(getHttp("http://202.30.29.209:4243/api/query/last?timeseries=test.test%7Bhost=house1_hum%7D&back_scan=24&resolve=true")+"%");
+                     tmpT.setText(getHttp("http://202.30.29.209:4243/api/query/last?timeseries=test.test%7Bhost=house1_temp%7D&back_scan=24&resolve=true")+"°C");
                      // 걍 외우는게 좋다 -_-;
                      final ImageView iv = (ImageView) findViewById(R.id.imageV);
                      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
@@ -133,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements
                      URL url;
                          currentDateTimeString = dateFormat.format(new Date(System.currentTimeMillis() - 1800000));
                          Log.v("MAIN ACTIVITY", "CURRENT TIME : " + currentDateTimeString);
-                         url = new URL("http://202.30.29.209:4242/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
+                         url = new URL("http://202.30.29.209:4243/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
                          InputStream is = url.openStream();
                          final Bitmap bm = BitmapFactory.decodeStream(is);
                          handler.post(new Runnable() {

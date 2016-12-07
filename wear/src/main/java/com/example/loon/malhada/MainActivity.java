@@ -96,7 +96,7 @@ public class MainActivity extends WearableActivity implements
         MessageReceiver messageReceiver = new MessageReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
         getREQ("LIST");
-        getREQ("RNVIR");
+        getREQ("ENVIR");
     }
 
     protected void onClick(View v){
@@ -109,7 +109,7 @@ public class MainActivity extends WearableActivity implements
         }
         else if(v==REFRESH){
             getREQ("LIST");
-            getREQ("RNVIR");
+            getREQ("ENVIR");
         }
     }
 
@@ -176,7 +176,7 @@ public class MainActivity extends WearableActivity implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String request = Rejson.toString();
+        String request = Rejson.toString();
         new SendToDataLayerThread("/message_path", request).start();
     }
     @Override

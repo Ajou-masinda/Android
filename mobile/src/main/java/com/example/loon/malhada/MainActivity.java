@@ -56,7 +56,9 @@ import java.util.List;
 
 import static java.lang.Thread.sleep;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity  implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     ConnectServer connectServer;
     DatabaseHandler DbHandler;
     ViewFlipper page;
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         // Build a new DatabaseHandler
 
-        connectServer = new ConnectServer("202.30.29.209", 3030);
+        connectServer = new ConnectServer("211.106.58.191", 3030);
         DbHandler = new DatabaseHandler(this);
         AddBt = (Button) findViewById(R.id.AddBt);
         tmpT = (TextView) findViewById(R.id.tmpT);
@@ -117,8 +119,8 @@ public class MainActivity extends AppCompatActivity  {
             public void run() { // 오래 거릴 작업을 구현한다
                 // TODO Auto-generated method stub
                 try {
-                    humT.setText(getHttp("http://202.30.29.209:4243/api/query/last?timeseries=test.test%7Bhost=house1_hum%7D&back_scan=24&resolve=true")+"%");
-                    tmpT.setText(getHttp("http://202.30.29.209:4243/api/query/last?timeseries=test.test%7Bhost=house1_temp%7D&back_scan=24&resolve=true")+"°C");
+                    humT.setText(getHttp("http://211.106.58.191:4243/api/query/last?timeseries=test.test%7Bhost=house1_hum%7D&back_scan=24&resolve=true")+"%");
+                    tmpT.setText(getHttp("http://211.106.58.191:4243/api/query/last?timeseries=test.test%7Bhost=house1_temp%7D&back_scan=24&resolve=true")+"°C");
                     // 걍 외우는게 좋다 -_-;
                     final ImageView iv = (ImageView) findViewById(R.id.imageV);
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity  {
                     URL url;
                     currentDateTimeString = dateFormat.format(new Date(System.currentTimeMillis() - 1800000));
                     Log.v("MAIN ACTIVITY", "CURRENT TIME : " + currentDateTimeString);
-                    url = new URL("http://202.30.29.209:4243/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
+                    url = new URL("http://211.106.58.191:4243/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
                     InputStream is = url.openStream();
                     final Bitmap bm = BitmapFactory.decodeStream(is);
                     handler.post(new Runnable() {
@@ -149,6 +151,13 @@ public class MainActivity extends AppCompatActivity  {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Plist.setAdapter(adapter);
+        Plist.setOnItemClickListener(ClickListener);
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+
         JSONObject sObject = new JSONObject();
         try {
             sObject.put("REQ","GET");
@@ -191,16 +200,12 @@ public class MainActivity extends AppCompatActivity  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        Plist.setAdapter(adapter);
-        Plist.setOnItemLongClickListener(longClickListener);
         chaingeActivity();
-
     }
-    private AdapterView.OnItemLongClickListener longClickListener = new AdapterView.OnItemLongClickListener() {
+    private AdapterView.OnItemClickListener ClickListener = new AdapterView.OnItemClickListener() {
 
         @Override
-        public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int position, long arg3){
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Log.v("DD", "register = " +PlugList.get(position).getRegister() + "position" + position);
             if(PlugList.get(position).getRegister() != 1)
             {
@@ -216,7 +221,7 @@ public class MainActivity extends AppCompatActivity  {
                 intentConditionActivity.putExtra("position",position);
                 startActivityForResult(intentConditionActivity, 1);
             }
-            return false;
+            return;
         }
     };
 
@@ -326,7 +331,7 @@ public class MainActivity extends AppCompatActivity  {
                 Thread connect = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        jsonstring = connectServer.sendJSON(request);
+                        connectServer.sendJSON(request);
                     }
                 });
                 connect.start();
@@ -352,7 +357,7 @@ public class MainActivity extends AppCompatActivity  {
                 Thread connect = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        jsonstring = connectServer.sendJSON(request);
+                        connectServer.sendJSON(request);
                     }
                 });
                 connect.start();
@@ -389,5 +394,20 @@ public class MainActivity extends AppCompatActivity  {
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
         i.putExtra(RecognizerIntent.EXTRA_PROMPT, "말하세요.");
         startActivityForResult(i, 100);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

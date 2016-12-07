@@ -33,7 +33,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class MainService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
@@ -42,7 +41,7 @@ public class MainService extends Service implements
     String jsonstring;
     String hum,tmp;
     public void onCreate(){
-        connectServer = new ConnectServer("202.30.29.209", 3030);
+        connectServer = new ConnectServer("211.106.58.191", 3030);
         googleClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)

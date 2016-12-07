@@ -23,7 +23,7 @@ public class ConditionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.plugcondition);
-        connectServer = new ConnectServer("202.30.29.209", 3030);
+        connectServer = new ConnectServer("211.106.58.191", 3030);
         intent = getIntent();
         nameText = (TextView) findViewById(R.id.nameSetT);
         locationText = (TextView) findViewById(R.id.locationSetT);
@@ -69,7 +69,9 @@ public class ConditionActivity extends AppCompatActivity {
             JSONObject Rejson = new JSONObject();
             try {
                 Rejson.put("REQ","COMMAND");
-                Rejson.put("MSG",nameText.getText().toString()+"켜줘");
+                Rejson.put("NAME",nameText.getText().toString());
+                Rejson.put("STATUS","ON");
+                Rejson.put("MSG","");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -86,7 +88,9 @@ public class ConditionActivity extends AppCompatActivity {
             JSONObject Rejson = new JSONObject();
             try {
                 Rejson.put("REQ","COMMAND");
-                Rejson.put("MSG",nameText.getText().toString()+"꺼줘");
+                Rejson.put("NAME",nameText.getText().toString());
+                Rejson.put("STATUS","OFF");
+                Rejson.put("MSG","");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

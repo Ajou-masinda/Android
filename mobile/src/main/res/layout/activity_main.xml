@@ -62,7 +62,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tmpT"
                             android:layout_marginRight="20dp"
-                            android:textSize="20sp" />
+                            android:textSize="25sp" />
 
                         <TextView
                             android:text=""
@@ -70,7 +70,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/humT"
                             android:layout_toRightOf="@id/tmpT"
-                            android:textSize="20sp" />
+                            android:textSize="25sp" />
 
                     </RelativeLayout>
 

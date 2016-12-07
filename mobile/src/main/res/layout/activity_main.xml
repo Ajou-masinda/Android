@@ -79,7 +79,6 @@
                         android:layout_below="@id/text_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:srcCompat="@color/cast_expanded_controller_background_color"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"
                         android:id="@+id/imageV"

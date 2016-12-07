@@ -6,33 +6,96 @@
     tools:context="com.example.loon.malhada.MainActivity"
     tools:deviceIds="wear_round">
 
-    <TextView
-        android:text="20%"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:layout_alignBaseline="@+id/textView"
-        android:layout_alignBottom="@+id/textView"
-        android:layout_toEndOf="@+id/STTB" />
-
-    <TextView
-        android:text="18%"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="18dp"
-        android:layout_marginTop="59dp"
-        android:id="@+id/textView"
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ViewF"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/STTB" />
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/STTB"
+        android:layout_alignParentEnd="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="TMP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tmpT"
+                android:layout_marginStart="30dp"
+                android:textSize="32sp"
+                android:layout_marginTop="64dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/humT"
+                android:textSize="32sp"
+                android:text="hum"
+                android:layout_alignBaseline="@+id/tmpT"
+                android:layout_alignBottom="@+id/tmpT"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="29dp"
+                android:textAllCaps="false" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_above="@+id/STTB"
+            android:layout_alignParentEnd="true">
+
+            <RelativeLayout
+                android:id="@+id/refreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:text="refresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/refreshB"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="onClick"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/refreshLayout"
+                android:layout_alignParentStart="true">
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/pList" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </ViewFlipper>
 
     <Button
         android:text="STT"
+        android:background="@mipmap/ic_launcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/STTB"
-        android:layout_marginTop="34dp"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
         android:onClick="onClick"
-        />
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        android:elevation="0dp"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

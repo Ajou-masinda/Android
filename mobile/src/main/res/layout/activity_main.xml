@@ -36,14 +36,16 @@
                         android:layout_width="250dp"
                         android:layout_height="250dp"
                         android:layout_centerHorizontal="true">
-                    
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:scaleType="fitXY"
                             android:maxHeight="100dp"
                             android:adjustViewBounds="true"
-                            android:background="@drawable/malhanda_logo"/>
+                            android:background="@drawable/malhanda_logo"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentStart="true" />
 
                     </RelativeLayout>
 
@@ -59,14 +61,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/tmpT"
-                            android:layout_marginRight="20dp"/>
+                            android:layout_marginRight="20dp"
+                            android:textSize="20sp" />
 
                         <TextView
                             android:text=""
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/humT"
-                            android:layout_toRightOf="@id/tmpT"/>
+                            android:layout_toRightOf="@id/tmpT"
+                            android:textSize="20sp" />
 
                     </RelativeLayout>
 

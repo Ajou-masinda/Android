@@ -1,16 +1,20 @@
 package com.example.loon.malhada;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.sqlite.SQLiteAbortException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,7 +28,12 @@ import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -36,22 +45,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+import static java.lang.Thread.sleep;
+
+public class MainActivity extends AppCompatActivity  {
     ConnectServer connectServer;
     DatabaseHandler DbHandler;
     ViewFlipper page;
     String jsonstring;
     ArrayList<String> mResult;
-    GoogleApiClient googleClient;
     List<Plug_Info> PlugList = new ArrayList<Plug_Info>();
     Button AddBt,STTB1,STTB2;
     TextView tmpT, humT;
@@ -80,11 +90,6 @@ public class MainActivity extends AppCompatActivity implements
         } catch (SQLiteAbortException ex){
             DB = DbHandler.getReadableDatabase();
         }
-        googleClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
         Intent intent = new Intent(MainActivity.this,MainService.class);
         startService(intent);
         page = (ViewFlipper) findViewById(R.id.page);
@@ -106,37 +111,38 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             }
         });
-        Thread t = new Thread(new Runnable() {
-             @Override
-             public void run() { // 오래 거릴 작업을 구현한다
-                 // TODO Auto-generated method stub
-                 try {
-                     humT.setText(getHttp("http://202.30.29.209:4243/api/query/last?timeseries=test.test%7Bhost=house1_hum%7D&back_scan=24&resolve=true")+"%");
-                     tmpT.setText(getHttp("http://202.30.29.209:4243/api/query/last?timeseries=test.test%7Bhost=house1_temp%7D&back_scan=24&resolve=true")+"°C");
-                     // 걍 외우는게 좋다 -_-;
-                     final ImageView iv = (ImageView) findViewById(R.id.imageV);
-                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-                     String currentDateTimeString;
-                     URL url;
-                         currentDateTimeString = dateFormat.format(new Date(System.currentTimeMillis() - 1800000));
-                         Log.v("MAIN ACTIVITY", "CURRENT TIME : " + currentDateTimeString);
-                         url = new URL("http://202.30.29.209:4243/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
-                         InputStream is = url.openStream();
-                         final Bitmap bm = BitmapFactory.decodeStream(is);
-                         handler.post(new Runnable() {
-                             @Override
-                             public void run() { // 화면에 그려줄 작업
-                                 iv.setImageBitmap(bm);
-                             }
-                         });
-                         iv.setImageBitmap(bm); //비트맵 객체로 보여주기
-                        iv.notify();
-                     }
-                 catch(Exception e){
-                    }
 
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() { // 오래 거릴 작업을 구현한다
+                // TODO Auto-generated method stub
+                try {
+                    humT.setText(getHttp("http://202.30.29.209:4243/api/query/last?timeseries=test.test%7Bhost=house1_hum%7D&back_scan=24&resolve=true")+"%");
+                    tmpT.setText(getHttp("http://202.30.29.209:4243/api/query/last?timeseries=test.test%7Bhost=house1_temp%7D&back_scan=24&resolve=true")+"°C");
+                    // 걍 외우는게 좋다 -_-;
+                    final ImageView iv = (ImageView) findViewById(R.id.imageV);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+                    String currentDateTimeString;
+                    URL url;
+                    currentDateTimeString = dateFormat.format(new Date(System.currentTimeMillis() - 1800000));
+                    Log.v("MAIN ACTIVITY", "CURRENT TIME : " + currentDateTimeString);
+                    url = new URL("http://202.30.29.209:4243/q?start=" + currentDateTimeString + "&end=1s-ago&m=sum:test.test%7Bhost=house1_hum,host=house1_temp%7D&o=&yrange=%5B0:%5D&wxh=800x500&style=linespoint&png");
+                    InputStream is = url.openStream();
+                    final Bitmap bm = BitmapFactory.decodeStream(is);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() { // 화면에 그려줄 작업
+                            iv.setImageBitmap(bm);
+                        }
+                    });
+                    iv.setImageBitmap(bm); //비트맵 객체로 보여주기
+                    iv.notify();
                 }
-            });
+                catch(Exception e){
+                }
+
+            }
+        });
         t.start();
         try {
             t.join();
@@ -185,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         Plist.setAdapter(adapter);
         Plist.setOnItemLongClickListener(longClickListener);
         chaingeActivity();
@@ -194,28 +201,27 @@ public class MainActivity extends AppCompatActivity implements
 
         @Override
         public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int position, long arg3){
-                Log.v("DD", "register = " +PlugList.get(position).getRegister() + "position" + position);
-                if(PlugList.get(position).getRegister() != 1)
-                {
-                    Intent intentModifyActivity =  new Intent(MainActivity.this, ModifyActivity.class);
-                    intentModifyActivity.putExtra("position",position);
-                    startActivityForResult(intentModifyActivity, 1);
-                }
-                else{
-                    Intent intentConditionActivity =  new Intent(MainActivity.this, ConditionActivity.class);
-                    intentConditionActivity.putExtra("name",PlugList.get(position).getName());
-                    intentConditionActivity.putExtra("location",PlugList.get(position).getLocation());
-                    intentConditionActivity.putExtra("type",PlugList.get(position).getType());
-                    intentConditionActivity.putExtra("position",position);
-                    startActivityForResult(intentConditionActivity, 1);
-                }
+            Log.v("DD", "register = " +PlugList.get(position).getRegister() + "position" + position);
+            if(PlugList.get(position).getRegister() != 1)
+            {
+                Intent intentModifyActivity =  new Intent(MainActivity.this, ModifyActivity.class);
+                intentModifyActivity.putExtra("position",position);
+                startActivityForResult(intentModifyActivity, 1);
+            }
+            else{
+                Intent intentConditionActivity =  new Intent(MainActivity.this, ConditionActivity.class);
+                intentConditionActivity.putExtra("name",PlugList.get(position).getName());
+                intentConditionActivity.putExtra("location",PlugList.get(position).getLocation());
+                intentConditionActivity.putExtra("type",PlugList.get(position).getType());
+                intentConditionActivity.putExtra("position",position);
+                startActivityForResult(intentConditionActivity, 1);
+            }
             return false;
         }
     };
 
     protected void onStart() {
         super.onStart();
-        googleClient.connect();
     }
     public void OnClick(View v) {
         if(v==AddBt){
@@ -264,26 +270,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-  /*      if (null != googleClient && googleClient.isConnected()) {
-            googleClient.disconnect();
-        }
-        super.onStop();*/
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.v("MAIN ACTIVITY","=== CONNECTION FAIL ===");
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         // 넘어갔던 화면에서 되돌아 왔을 때
@@ -298,6 +284,7 @@ public class MainActivity extends AppCompatActivity implements
                 JSONObject Rejson = new JSONObject();
                 try {
                     Rejson.put("REQ","COMMAND");
+                    Rejson.put("TYPE","VOICE");
                     Rejson.put("MSG",mResult.get(0));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -374,17 +361,17 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
     private String getHttp(String url)throws Exception{
-         HttpClient client = new DefaultHttpClient();
-         //String url = "http://google.co.kr";
-         HttpGet get = new HttpGet(url);
-         HttpResponse response = client.execute(get);
-         HttpEntity resEntity = response.getEntity();
-         if(resEntity != null){
+        HttpClient client = new DefaultHttpClient();
+        //String url = "http://google.co.kr";
+        HttpGet get = new HttpGet(url);
+        HttpResponse response = client.execute(get);
+        HttpEntity resEntity = response.getEntity();
+        if(resEntity != null){
             String res = EntityUtils.toString(resEntity);
-             JSONArray jarray = new JSONArray(res);
-             JSONObject jObject = jarray.getJSONObject(0);
-             return jObject.getString("value");
-         }
+            JSONArray jarray = new JSONArray(res);
+            JSONObject jObject = jarray.getJSONObject(0);
+            return jObject.getString("value");
+        }
         return null;
     }
     private void chaingeActivity(){

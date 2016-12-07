@@ -86,7 +86,7 @@
 
     <Button
         android:text="STT"
-        android:background="@mipmap/ic_launcher"
+        android:background="@drawable/wear_mic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/STTB"

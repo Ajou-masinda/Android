@@ -96,7 +96,7 @@ public class MainActivity extends WearableActivity implements
         getREQ("ENVIR");
     }
 
-    protected void onClick(View v){
+    public void onClick(View v){
         if(v==STT){
             Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());

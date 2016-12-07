@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="120dp"
     android:orientation="vertical"
     android:divider="@drawable/horizontal_divider"
     android:showDividers="middle">
@@ -12,18 +12,35 @@
         android:divider="@drawable/vertical_divider"
         android:showDividers="middle">
 
-        <TextView
-            android:id="@+id/nameTv"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:textSize="50dp" />
-        <TextView
-            android:id="@+id/plug_location"
+            android:layout_height="wrap_content"
+            android:layout_weight="3">
+
+            <TextView
+                android:id="@+id/nameTv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:textSize="50dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="50dp" />
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/plug_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                android:src="@drawable/power_off"/>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

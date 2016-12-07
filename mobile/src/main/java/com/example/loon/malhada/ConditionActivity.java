@@ -69,8 +69,11 @@ public class ConditionActivity extends AppCompatActivity {
             JSONObject Rejson = new JSONObject();
             try {
                 Rejson.put("REQ","COMMAND");
+                Rejson.put("TYPE","TEXT");
+                Rejson.put("DEVICE","TV");
                 Rejson.put("NAME",nameText.getText().toString());
                 Rejson.put("STATUS","ON");
+                Rejson.put("MOTION","POWER");
                 Rejson.put("MSG","");
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -88,8 +91,11 @@ public class ConditionActivity extends AppCompatActivity {
             JSONObject Rejson = new JSONObject();
             try {
                 Rejson.put("REQ","COMMAND");
+                Rejson.put("TYPE","TEXT");
+                Rejson.put("DEVICE","TV");
                 Rejson.put("NAME",nameText.getText().toString());
                 Rejson.put("STATUS","OFF");
+                Rejson.put("MOTION","POWER");
                 Rejson.put("MSG","");
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -103,6 +109,95 @@ public class ConditionActivity extends AppCompatActivity {
             });
             connect.start();
         }
+        else if(v ==volUpB ){
+            JSONObject Rejson = new JSONObject();
+            try {
+                Rejson.put("REQ","COMMAND");
+                Rejson.put("TYPE","TEXT");
+                Rejson.put("DEVICE","TV");
+                Rejson.put("MOTION","VOLUMEUP");
+                Rejson.put("NAME",nameText.getText().toString());
+                Rejson.put("STATUS","");
+                Rejson.put("MSG","");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            final String request = Rejson.toString();
+            Thread connect = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectServer.sendJSON(request);
+                }
+            });
+            connect.start();
+        }
+        else if(v == volDownB){
+            JSONObject Rejson = new JSONObject();
+            try {
+                Rejson.put("REQ","COMMAND");
+                Rejson.put("TYPE","TEXT");
+                Rejson.put("DEVICE","TV");
+                Rejson.put("MOTION","VOLUMEDOWN");
+                Rejson.put("NAME",nameText.getText().toString());
+                Rejson.put("STATUS","");
+                Rejson.put("MSG","");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            final String request = Rejson.toString();
+            Thread connect = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectServer.sendJSON(request);
+                }
+            });
+            connect.start();
+        }
+        else if(v == chUpB){
+            JSONObject Rejson = new JSONObject();
+            try {
+                Rejson.put("REQ","COMMAND");
+                Rejson.put("TYPE","TEXT");
+                Rejson.put("DEVICE","TV");
+                Rejson.put("MOTION","CHANNELUP");
+                Rejson.put("NAME",nameText.getText().toString());
+                Rejson.put("STATUS","");
+                Rejson.put("MSG","");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            final String request = Rejson.toString();
+            Thread connect = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectServer.sendJSON(request);
+                }
+            });
+            connect.start();
+        }
+        else if(v == chdownB){
+            JSONObject Rejson = new JSONObject();
+            try {
+                Rejson.put("REQ","COMMAND");
+                Rejson.put("TYPE","TEXT");
+                Rejson.put("DEVICE","TV");
+                Rejson.put("MOTION","CHANNELDOWN");
+                Rejson.put("NAME",nameText.getText().toString());
+                Rejson.put("STATUS","");
+                Rejson.put("MSG","");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            final String request = Rejson.toString();
+            Thread connect = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    connectServer.sendJSON(request);
+                }
+            });
+            connect.start();
+        }
+
     }
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
@@ -111,6 +206,8 @@ public class ConditionActivity extends AppCompatActivity {
 
             intent.putExtra("name", data.getStringExtra("name"));
             intent.putExtra("location", data.getStringExtra("location"));
+            intent.putExtra("vendor",data.getIntExtra("vendor",0));
+            intent.putExtra("type",data.getIntExtra("type",0));
             intent.putExtra("position", position);
             setResult(1, intent);
             finish();

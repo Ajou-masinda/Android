@@ -3,6 +3,7 @@ package com.example.loon.malhada;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +11,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 /**
  * Created by loon on 2016-12-01.
@@ -93,6 +93,7 @@ public class ModifyActivity extends AppCompatActivity {
             else{
                 end = false;
             }
+            Log.v("dd","type = " +type +"vendor" +vendor);
             intent.putExtra("type", type);
             intent.putExtra("vendor", vendor);
             if(end){

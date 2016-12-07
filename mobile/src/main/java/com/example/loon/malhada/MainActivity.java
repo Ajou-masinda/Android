@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity  implements
     String jsonstring;
     ArrayList<String> mResult;
     List<Plug_Info> PlugList = new ArrayList<Plug_Info>();
-    Button AddBt,STTB1,STTB2;
+    Button AddBt;
     TextView tmpT, humT;
     ListView Plist;
     PlugAdapter adapter = new PlugAdapter();
@@ -71,8 +71,7 @@ public class MainActivity extends AppCompatActivity  implements
         tmpT = (TextView) findViewById(R.id.tmpT);
         humT = (TextView) findViewById(R.id.humT);
         Plist = (ListView) findViewById(R.id.PList);
-        //STTB1 = (Button) findViewById(R.id.STTB1);
-        //STTB2 = (Button) findViewById(R.id.STTB2);
+
         try {
             DB = DbHandler.getWritableDatabase();
         } catch (SQLiteAbortException ex){
@@ -139,11 +138,6 @@ public class MainActivity extends AppCompatActivity  implements
         }
         Plist.setAdapter(adapter);
         Plist.setOnItemClickListener(ClickListener);
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-
         JSONObject sObject = new JSONObject();
         try {
             sObject.put("REQ","GET");
@@ -188,6 +182,7 @@ public class MainActivity extends AppCompatActivity  implements
         }
         chaingeActivity();
     }
+
     private AdapterView.OnItemClickListener ClickListener = new AdapterView.OnItemClickListener() {
 
         @Override
@@ -204,6 +199,7 @@ public class MainActivity extends AppCompatActivity  implements
                 intentConditionActivity.putExtra("name",PlugList.get(position).getName());
                 intentConditionActivity.putExtra("location",PlugList.get(position).getLocation());
                 intentConditionActivity.putExtra("type",PlugList.get(position).getType());
+                intentConditionActivity.putExtra("vendor",PlugList.get(position).getVendor());
                 intentConditionActivity.putExtra("position",position);
                 startActivityForResult(intentConditionActivity, 1);
             }
@@ -300,6 +296,7 @@ public class MainActivity extends AppCompatActivity  implements
                     sObject.put("name",data.getExtras().getString("name"));
                     sObject.put("locate",data.getExtras().getString("location"));
                     sObject.put("type",data.getExtras().getInt("type"));
+                    //sObject.put("status",data.getExtras().getInt("status"));
                     sObject.put("vendor",data.getExtras().getInt("vendor"));
                     sObject.put("serial",PlugList.get((data.getIntExtra("position",0))).getSerial());
                 } catch (JSONException e) {
@@ -349,6 +346,49 @@ public class MainActivity extends AppCompatActivity  implements
                 connect.start();
                 chaingeActivity();
             }
+            else{
+                JSONObject sObject = new JSONObject();
+                try {
+                    sObject.put("REQ","GET");
+                    sObject.put("MSG","LIST");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                final String request = sObject.toString();
+                Thread connect = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.v("MAIN ACTIVITY", "GET Plug LIST - Request to Deudnunda");
+                        jsonstring = connectServer.sendJSON(request);
+                    }
+                });
+                connect.start();
+                try {
+                    connect.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                };
+                try {
+                    DbHandler.deleteAll();
+                    JSONArray jarray = new JSONArray(jsonstring);
+                    for(int i=0; i<jarray.length(); i++)
+                    {
+                        JSONObject jOBject = jarray.getJSONObject(i);
+                        Plug_Info plug = new Plug_Info();
+                        plug.setName(jOBject.getString("name"));
+                        plug.setLocation(jOBject.getString("locate"));
+                        plug.setType(jOBject.getInt("type"));
+                        plug.setVendor(jOBject.getInt("vendor"));
+                        plug.setSerial(jOBject.getString("serial"));
+                        plug.setStatus(jOBject.getInt("status"));
+                        plug.setRegister(jOBject.getInt("register"));
+                        DbHandler.addContact(plug);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                chaingeActivity();
+            }
         }
     }
     private String getHttp(String url)throws Exception{
@@ -370,7 +410,7 @@ public class MainActivity extends AppCompatActivity  implements
         //adapter.addItem("NAME","SERIAL");
         PlugList = DbHandler.getAllCustomer_Info();
         for(int i=0; i< PlugList.size(); i++)
-            adapter.addItem(PlugList.get(i).getName(),PlugList.get(i).getSerial(),PlugList.get(i).getRegister());
+            adapter.addItem(PlugList.get(i).getName(),PlugList.get(i).getSerial(),PlugList.get(i).getRegister(), PlugList.get(i).getStatus());
         adapter.notifyDataSetChanged();
     }
 

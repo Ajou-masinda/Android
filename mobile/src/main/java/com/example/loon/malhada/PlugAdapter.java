@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,12 +34,25 @@ public class PlugAdapter extends BaseAdapter {
         }
         TextView nameView = (TextView) convertView.findViewById(R.id.nameTv) ;
         TextView conView = (TextView) convertView.findViewById(R.id.conTv) ;
+        ImageView statusView = (ImageView) convertView.findViewById(R.id.plug_status);
         PlugList listViewItem = listViewItemList.get(pos);
         nameView.setText(listViewItem.getName());
 
         if(listViewItem.getRegister() < 1) {
             nameView.setTextColor(Color.parseColor("#FFCACACA"));
         }
+        else {
+            nameView.setTextColor(Color.parseColor("#000000"));
+        }
+
+        if(listViewItem.getStatus() < 1) {
+            statusView.setImageResource(R.drawable.power_off);
+        }
+        else {
+            statusView.setImageResource(R.drawable.power_on);
+        }
+
+
         conView.setText("Plug Serial : " + String.valueOf(listViewItem.getSerial()));
         return convertView;
     }
@@ -56,11 +70,12 @@ public class PlugAdapter extends BaseAdapter {
     public Object getItem(int position) {
         return listViewItemList.get(position) ;
     }
-    public void addItem(String name, String serial, int register) {
+    public void addItem(String name, String serial, int register, int status) {
         PlugList item = new PlugList();
         item.setName(name);
         item.setSerial(serial);
         item.setRegister(register);
+        item.setStatus(status);
         listViewItemList.add(item);
         return;
     }

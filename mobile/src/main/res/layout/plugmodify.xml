@@ -2,68 +2,65 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <TextView
-        android:text="Name : "
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/modify_name_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:id="@+id/name_mT" />
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/name_mEt"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:text="플러그 이름 : "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textSize="40dp"
+            android:id="@+id/name_mT" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/location_mEt"
-        android:layout_below="@+id/name_mEt"
-        android:layout_alignStart="@+id/name_mEt" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:inputType="textPersonName"
+            android:textSize="40dp"
+            android:id="@+id/name_mEt" />
 
-    <Button
-        android:text="modify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="38dp"
-        android:id="@+id/modify_mB"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/location_mT"
-        android:onClick="OnClickModity"/>
+    </LinearLayout>
 
-    <Button
-        android:text="delete"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/modify_location_layout"
+        android:layout_below="@+id/modify_name_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="69dp"
-        android:id="@+id/Delete_mB"
-        android:layout_alignBaseline="@+id/modify_mB"
-        android:layout_alignBottom="@+id/modify_mB"
-        android:layout_alignParentEnd="true"
-        android:onClick="OnClickModity"/>
+        android:orientation="horizontal">
 
-    <TextView
-        android:text="Location : "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/location_mT"
-        android:layout_alignBaseline="@+id/location_mEt"
-        android:layout_alignBottom="@+id/location_mEt" />
+        <TextView
+            android:text="Location : "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textSize="40dp"
+            android:id="@+id/location_mT" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textSize="40dp"
+            android:inputType="textPersonName"
+            android:id="@+id/location_mEt" />
+
+    </LinearLayout>
+
     <CheckBox
         android:text="IR"
+        android:textSize="40dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/IRcheck"
-        android:layout_below="@+id/location_mT"
+        android:layout_below="@+id/modify_location_layout"
         android:layout_centerHorizontal="true" />
 
     <RadioGroup
@@ -75,6 +72,7 @@
 
         <RadioButton
             android:text="Air"
+            android:textSize="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/AirRb"
@@ -82,6 +80,7 @@
 
         <RadioButton
             android:text="Tv"
+            android:textSize="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/TvRb"
@@ -99,6 +98,7 @@
 
         <RadioButton
             android:text="LG"
+            android:textSize="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/LgRb"
@@ -106,9 +106,37 @@
 
         <RadioButton
             android:text="SAMSUNG"
+            android:textSize="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/SamsungRb"
             android:layout_weight="1" />
     </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Gaddradio"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="center">
+
+        <Button
+            android:text="modify"
+            android:textSize="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/modify_mB"
+            android:onClick="OnClickModity" />
+
+        <Button
+            android:text="delete"
+            android:textSize="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Delete_mB"
+            android:onClick="OnClickModity"/>
+
+    </LinearLayout>
+
 </RelativeLayout>
